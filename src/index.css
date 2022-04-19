@@ -1,0 +1,29 @@
+body {
+  margin: 30px 0px 0px 0px;;
+  padding: 50px 0px 0px 0px;
+  background-color: rgb(215, 248, 200);
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.contenedor{
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.nav-signup{
+  position: absolute;
+  right: 0;
+  top: 0;
+  left: 0;
+}
+textarea {
+  resize: none;
+}
+
+.modalWithoutPadding{
+  padding: 0px;
+}
+* {
+  text-decoration: none;
+}
