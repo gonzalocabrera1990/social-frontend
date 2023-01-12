@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 import { baseUrl } from '../shared/baseUrl';
 
 export const RenderComments = (props) => {
-    const sss = props.comentarios;
+    const sss = !props.comentarios ? null : props.comentarios.length === 0 ? [] : props.comentarios[0].length > 1 ? props.comentarios[0] : props.comentarios;
     let storage = JSON.parse(localStorage.getItem('id'));
     const uuu = !sss ?  null : sss.map(comm => {
         let commId = comm._id
@@ -20,7 +20,9 @@ export const RenderComments = (props) => {
                 <div className="comment-row">
                     <div className="d-flex">
                     <div>
-                        <Link to={`/profiles/${props.usuario}/${comm.author.usuario}`}>
+                        <Link to={`/profiles/
+                        ${props.usuario}/
+                        ${comm.author.usuario}`}>
                             <img className="comment" src={baseUrl + comm.author.image.filename} alt="user/friend" />
                         </Link>
                     </div>

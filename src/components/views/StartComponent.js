@@ -278,7 +278,9 @@ const ImgWall = (props) => {
                     <div className="row" key={first._id}>
                         <div className="backi">
                             <div className=" imagenesWallHeadFrame">
-                                <Link to={`/profiles/${props.usuario}/${first.userId.usuario}`} >
+                                <Link to={`/profiles/
+                                ${props.usuario}/
+                                ${first.userId.usuario}`} >
                                     <div className="frameOne">
                                         <img className="imagenesWallHead" src={baseUrl + first.userId.image.filename} alt={first.userId.image._id} />
                                         <h6 className="ml-3">{first.userId.firstname} {first.userId.lastname}</h6>
@@ -319,13 +321,17 @@ const ImgWall = (props) => {
                                         (
                                         <div>
                                             <div className="commentsContent">
-                                                <Link to={`/profiles/${props.usuario}/${first.commento[0][first.commento[0].length -2].author.usuario}`}>
+                                                <Link to={`/profiles/
+                                                ${props.usuario}/
+                                                ${first.commento[0][first.commento[0].length -2].author.usuario}`}>
                                                     <h6 className="author" >{first.commento[0][first.commento[0].length -2].author.usuario}</h6>
                                                 </Link>
                                                 <h6 className="comments" >{first.commento[0][first.commento[0].length -2].comment}</h6>
                                             </div>
                                             <div className="commentsContent">
-                                                <Link to={`/profiles/${props.usuario}/${first.commento[0][first.commento[0].length -1].author.usuario}`} >
+                                                <Link to={`/profiles/
+                                                ${props.usuario}/
+                                                ${first.commento[0][first.commento[0].length -1].author.usuario}`} >
                                                     <h6 className="author" >{first.commento[0][first.commento[0].length -1].author.usuario}</h6>
                                                 </Link>
                                                 <h6 className="comments" >{first.commento[0][first.commento[0].length -1].comment}</h6>
@@ -336,7 +342,9 @@ const ImgWall = (props) => {
                                     first.commento[0] !== undefined ?
                                     (
                                     <div className="commentsContent">
-                                        <Link to={`/profiles/${props.usuario}/${first.commento[0].author.usuario}`} >
+                                        <Link to={`/profiles/
+                                        ${props.usuario}/
+                                        ${first.commento[0].author.usuario}`} >
                                             <h6 className="author" >{first.commento[0].author.usuario}</h6>
                                         </Link>
                                         <h6 className="comments" >{first.commento[0].comment}</h6>
@@ -358,7 +366,9 @@ const ImgWall = (props) => {
                     <div className="row" key={first._id}>
                         <div className="backi">
                             <div className=" imagenesWallHeadFrame">
-                                <Link to={`/profiles/${props.usuario}/${first.userId.usuario}`} >
+                                <Link to={`/profiles/
+                                ${props.usuario}/
+                                ${first.userId.usuario}`} >
                                     <div className="frameOne">
                                         <img className="imagenesWallHead" src={baseUrl + first.userId.image.filename} alt={first.userId.image._id} />
                                         <h6 className="ml-3">{first.userId.firstname} {first.userId.lastname}</h6>
@@ -397,13 +407,17 @@ const ImgWall = (props) => {
                                         (
                                         <div>
                                             <div className="commentsContent">
-                                                <Link to={`/profiles/${props.usuario}/${first.commento[0][first.commento[0].length -2].author.usuario}`}>
+                                                <Link to={`/profiles/
+                                                ${props.usuario}/
+                                                ${first.commento[0][first.commento[0].length -2].author.usuario}`}>
                                                     <h6 className="author" >{first.commento[0][first.commento[0].length -2].author.usuario}</h6>
                                                 </Link>
                                                 <h6 className="comments" >{first.commento[0][first.commento[0].length -2].comment}</h6>
                                             </div>
                                             <div className="commentsContent">
-                                                <Link to={`/profiles/${props.usuario}/${first.commento[0][first.commento[0].length -1].author.usuario}`} >
+                                                <Link to={`/profiles/
+                                                ${props.usuario}/
+                                                ${first.commento[0][first.commento[0].length -1].author.usuario}`} >
                                                     <h6 className="author" >{first.commento[0][first.commento[0].length -1].author.usuario}</h6>
                                                 </Link>
                                                 <h6 className="comments" >{first.commento[0][first.commento[0].length -1].comment}</h6>
@@ -414,7 +428,9 @@ const ImgWall = (props) => {
                                     first.commento[0] !== undefined ?
                                     (
                                     <div className="commentsContent">
-                                        <Link to={`/profiles/${props.usuario}/${first.commento[0].author.usuario}`} >
+                                        <Link to={`/profiles/
+                                        ${props.usuario}/
+                                        ${first.commento[0].author.usuario}`} >
                                             <h6 className="author" >{first.commento[0].author.usuario}</h6>
                                         </Link>
                                         <h6 className="comments" >{first.commento[0].comment}</h6>
@@ -477,7 +493,9 @@ const Amigos = (props) => {
             const FOLLOW = mapeoFollowing.map(f => {
                 return (
                     <div key={f._id}>
-                        <Link to={`/profiles/${props.usuario}/${f.id.usuario}`}>
+                        <Link to={`/profiles/
+                        ${props.usuario}/
+                        ${f.id.usuario}`}>
                             <div className="" >
                                 <ImageGrida>
                                     <div>
@@ -498,7 +516,9 @@ const Amigos = (props) => {
             const FOLLOWERS = mapeoFollowers.map(f => {
                 return (
                     <div key={f._id}>
-                        <Link to={`/profiles/${props.usuario}/${f.id.usuario}`} >
+                        <Link to={`/profiles/
+                        ${props.usuario}/
+                        ${f.id.usuario}`} >
                             <div className="" >
                                 <ImageGrida>
                                     <div>
