@@ -62,7 +62,7 @@ const controlState = (e) => {
       <div>
          <Modal isOpen={isModalOpen} toggle={toggleModal}>
                 <ModalBody>
-                    <h5>Por favor, completa tu informacion personal antes de navegar por vuestro sitio.</h5>
+                    <h5>Please, fill in your personal information before browsing your site.</h5>
                 </ModalBody>
                 <ModalFooter>
                     <Button color="success" onClick={toggleModal} >Close</Button>
@@ -72,14 +72,14 @@ const controlState = (e) => {
           <Form onSubmit={handleSubmit} encType="multipart/form-data">
             <FormGroup row>
               <Label htmlFor="firstname" md={2}>
-                Nombre
+                Firstname
               </Label>
               <Col md={10}>
                 <Input
                   type="text"
                   id="firstname"
                   name="firstname"
-                  placeholder="Nombre"
+                  placeholder="Firstname"
                   onChange={controlState}
                   value={dataForm.firstname}
                 />
@@ -88,14 +88,14 @@ const controlState = (e) => {
             </FormGroup>
             <FormGroup row>
               <Label htmlFor="lastname" md={2}>
-                Apellido
+                Lastname
               </Label>
               <Col md={10}>
                 <Input
                   type="text"
                   id="lastname"
                   name="lastname"
-                  placeholder="Apellido"
+                  placeholder="Lastname"
                   onChange={controlState}
                   value={dataForm.lastname}
                 />
@@ -104,14 +104,14 @@ const controlState = (e) => {
             </FormGroup>
             <FormGroup row>
               <Label htmlFor="phrase" md={2}>
-                Frase de Cabecera
+                Personal phrase
               </Label>
               <Col md={10}>
                 <Input
                   type="textarea"
                   id="phrase"
                   name="phrase"
-                  placeholder="Frase de Cabecera"
+                  placeholder="Personal phrase"
                   onChange={controlState}
                   value={dataForm.phrase}
                 />
@@ -119,16 +119,16 @@ const controlState = (e) => {
             </FormGroup>
             <FormGroup row  className="cursor" >
               <Label htmlFor="status" md={2} >
-                Estado de la cuenta
+                Status account
               </Label>
               <Col md={10} >
-              <CustomInput type="switch" id="status" name="status" label={dataForm.status ? "privado" : "publica"}
+              <CustomInput type="switch" id="status" name="status" label={dataForm.status ? "Private" : "Public"}
                 onChange={controlState}
                 checked={dataForm.status}
                 />
               </Col>
               <Col>
-                <Button type="submit">Enviar</Button>
+                <Button type="submit">Send</Button>
               </Col>
             </FormGroup>
           </Form>

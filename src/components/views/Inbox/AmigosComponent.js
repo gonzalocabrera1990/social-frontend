@@ -26,7 +26,7 @@ export const AmigosComponent = (props) => {
     return (
         <div className="container-fluid inbox">
             <div className="row p-0 ml-2">
-                <h5>Amigos</h5>
+                <h5>Followers</h5>
             </div>
             <div className="row inboxes">
                 <h6>{mapeoFollow}</h6>

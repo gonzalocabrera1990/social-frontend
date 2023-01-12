@@ -57,26 +57,26 @@ export const Forms = withRouter((props)=> {
 
     if (touched.password && password.length < 4) {
       error.password.err =
-        "La contraseña es DEBIL. Debe ser mayor a 4 caracteres. Recomendamos alternar numeros y letras";
+        "The password is WEAK. It must be greater than 4 characters. We recommend alternating numbers and letters.";
 
     } else if (touched.password && password.length > 10) {
       error.password.err =
-        "El contraseña debe ser menor o igual a 10 caracteres. Recomendamos alternar numeros y letras";
+        "The password must be less than or equal to 10 characters. We recommend alternating numbers and letters.";
     } else if (password !== "") {
       error.password.valid = true
     }
 
     if (touched.repeatpassword && repeatpassword !== password) {
       error.repeatpassword.err =
-        "CONTRASEÑA Y REPETIR CONTRASEÑA NO COINCIDEN. POR FAVOR, VALIDA ESTE COMPO DE TEXTO";
+        "Password and Repeat password do not match. Please validate these fields.";
     } else if (touched.repeatpassword && repeatpassword.length > 10) {
       error.repeatpassword.err =
-        "El contraseña debe ser menor o igual a 10 caracteres. Recomendamos alternar numeros y letras";
+        "The password must be less than or equal to 10 characters. We recommend alternating numbers and letters.";
     } else if (repeatpassword !== "") {
       error.repeatpassword.valid = true
     }
     if (touched.username && !expreg.test(username)) {
-      error.username.err = "Debe cumplir el formato de email. Ej: exampe@mail.com";
+      error.username.err = "Wrong e-mail format. Ej: exampe@mail.com";
     } else if (username !== "") {
       error.username.valid = true
     }
@@ -119,7 +119,7 @@ export const Forms = withRouter((props)=> {
       <div>
         <div className="container-fluid">
           <div className=" col-sm-6 offset-sm-3">
-            <h1>Crea una cuenta nueva</h1>
+            <h1>SignUp</h1>
           </div>
         </div>
 
@@ -146,7 +146,7 @@ export const Forms = withRouter((props)=> {
             </FormGroup>
             <FormGroup row>
               <Label htmlFor="password" md={2}>
-                Contraseña
+                Password
               </Label>
               <Col md={10}>
                 <Input
@@ -165,14 +165,14 @@ export const Forms = withRouter((props)=> {
             </FormGroup>
             <FormGroup row>
               <Label htmlFor="repeatpassword" md={2}>
-                Repetir Contraseña
+                Repeat Password
               </Label>
               <Col md={10}>
                 <Input
                   type="password"
                   id="repeatpassword"
                   name="repeatpassword"
-                  placeholder="repetir contraseña"
+                  placeholder="repeat contraseña"
                   value={dataForm.repeatpassword}
                   valid={error.repeatpassword.err === ""}
                   invalid={error.repeatpassword.err !== ""}
@@ -184,7 +184,7 @@ export const Forms = withRouter((props)=> {
             </FormGroup>
             <FormGroup row>
               <Label htmlFor="sex" md={2}>
-                Sex
+                Gender
               </Label>
               <Col md={10}>
                 <Input
@@ -203,7 +203,7 @@ export const Forms = withRouter((props)=> {
             </FormGroup>
             <FormGroup row>
               <Label htmlFor="date" md={2}>
-                Fecha de Naciminento
+                Birthdate
               </Label>
               <Col md={10}>
                 <Input
@@ -236,9 +236,9 @@ export const Forms = withRouter((props)=> {
                 {
                   enableButton
                     ?
-                    <Button type="file" >Enviar</Button>
+                    <Button type="file" >Send</Button>
                     :
-                    <Button type="file" disabled>Enviar</Button>
+                    <Button type="file" disabled>Send</Button>
                 }
 
               </Col>

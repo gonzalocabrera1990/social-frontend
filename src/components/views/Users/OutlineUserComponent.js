@@ -64,7 +64,7 @@ const Render = (props) => {
                     <div className="user-info-description">
                         <h5 className="">{user.firstname} {user.lastname}</h5>
                         <h5 className="">{`"${user.phrase}"`}</h5>
-                        <h5 className="">{user.followers.length} Seguidores - {user.following.length} Seguidos</h5>
+                        <h5 className="">{user.followers.length} Followers - {user.following.length} Following</h5>
                     </div>
                     </div>
                         <ImageGrids className="image-grid">
@@ -81,7 +81,7 @@ const Render = (props) => {
                                     <NavLink
                                         className={classnames({ active: activeTab === '1' })}
                                         onClick={() => { toggle('1'); }}>
-                                        Imagenes
+                                        Images
                                     </NavLink>
                                 </NavItem>
                                 <NavItem className="col-6 cursor">

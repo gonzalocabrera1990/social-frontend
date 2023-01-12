@@ -64,7 +64,7 @@ export const Home = withRouter((props) => {
               </div>
               <div className="col-sm-5 boton">
                 <Button className="btn btn-lg bg-success " href="/signup">
-                  Singup
+                  SingUp
                 </Button>
               </div>
             </div>

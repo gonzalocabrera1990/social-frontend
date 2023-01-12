@@ -28,7 +28,7 @@ function useWindowSize() {
   return size;
 }
 
-export const MainUser =  withRouter((props) => {
+export const MainUser = withRouter((props) => {
   const [image, setImage] = useState(null)
   const [imageShowen, setImageShowen] = useState(null)
   const [loadWall, setLoadWall] = useState(null)
@@ -49,14 +49,14 @@ export const MainUser =  withRouter((props) => {
   const [active, setActive] = useState('')
   const [e, setE] = useState(null)
   const [isItAVideo, setisItAVideo] = useState(false)
- 
-  
+
+
   useEffect(() => {
     if (props.user.user) {
       let sourced = props.user.user.imagesWall.map(img => `${baseUrl}${img.filename}`)
       let videosSourced = props.user.user.videosWall.map(vid => `${baseUrl}${vid.filename}`)
-        setArraySource(sourced)
-        setVideoArraySource(videosSourced)
+      setArraySource(sourced)
+      setVideoArraySource(videosSourced)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -65,8 +65,8 @@ export const MainUser =  withRouter((props) => {
     let loadProfile = e.target.files[0];
     let showImg = URL.createObjectURL(e.target.files[0]);
 
-      setImage(loadProfile)
-      setImageShowen(showImg)
+    setImage(loadProfile)
+    setImageShowen(showImg)
   }
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -83,53 +83,53 @@ export const MainUser =  withRouter((props) => {
   //CARGA LA IMAGEN EN EL STATE DESDE EL FORM PARA LAS IMAGENS DEL MURO
   var myVideos = [];
 
-window.URL = window.URL || window.webkitURL;
+  window.URL = window.URL || window.webkitURL;
 
 
-const setFileInfo = (e) => {
-  let idfoto = e.target.id
-  myVideos.length = 0;
-  setLoadWallType(idfoto)
-  if(idfoto === "story"){
-    let files = !e.target.files[0] ? null : e.target.files[0];
-    let mediaType = !files ? null : files.type.split('/')[0]
-    if(mediaType === "image") handleWallimg(e) 
-    if(mediaType === "video") Wallvid(e)
-  } else if(idfoto === "video"){
-    Wallvid(e)
-  } else if(idfoto === "imagen"){
-    handleWallimg(e);
-  }  
-}
-function Wallvid(e){
-  var files = !e.target.files[0] ? null : e.target.files[0]
-  let loadingType = !files ? null : files.type.split('/')[0]
-  if (loadingType === "video") {
-    myVideos.push(files);
-    var video = document.createElement('video');
-    video.preload = 'metadata';
-    video.onloadedmetadata = function() {
-      window.URL.revokeObjectURL(video.src);
-      var duration = video.duration;
-      myVideos[myVideos.length - 1].duration = duration;
-      handleWallvid(e);
+  const setFileInfo = (e) => {
+    let idfoto = e.target.id
+    myVideos.length = 0;
+    setLoadWallType(idfoto)
+    if (idfoto === "story") {
+      let files = !e.target.files[0] ? null : e.target.files[0];
+      let mediaType = !files ? null : files.type.split('/')[0]
+      if (mediaType === "image") handleWallimg(e)
+      if (mediaType === "video") Wallvid(e)
+    } else if (idfoto === "video") {
+      Wallvid(e)
+    } else if (idfoto === "imagen") {
+      handleWallimg(e);
     }
-    video.src = URL.createObjectURL(files);
-  } else {
-    setIsFormatModalOpen(true)
   }
-}
+  function Wallvid(e) {
+    var files = !e.target.files[0] ? null : e.target.files[0]
+    let loadingType = !files ? null : files.type.split('/')[0]
+    if (loadingType === "video") {
+      myVideos.push(files);
+      var video = document.createElement('video');
+      video.preload = 'metadata';
+      video.onloadedmetadata = function () {
+        window.URL.revokeObjectURL(video.src);
+        var duration = video.duration;
+        myVideos[myVideos.length - 1].duration = duration;
+        handleWallvid(e);
+      }
+      video.src = URL.createObjectURL(files);
+    } else {
+      setIsFormatModalOpen(true)
+    }
+  }
 
-  function handleWallvid(e){
+  function handleWallvid(e) {
     var testing = myVideos[0].duration;
-    if(testing <= 60 ){
-        let loadingImgWall = e.target.files[0];
-        setLoadWall(loadingImgWall)
-        setDuration(testing * 1000)
+    if (testing <= 60) {
+      let loadingImgWall = e.target.files[0];
+      setLoadWall(loadingImgWall)
+      setDuration(testing * 1000)
     } else {
       setIsTimeModalOpen(true)
     }
-}
+  }
 
   const handleWallimg = (e) => {
     let loadingImgWall = !e.target.files[0] ? null : e.target.files[0];
@@ -138,7 +138,7 @@ function Wallvid(e){
       setIsFormatModalOpen(true)
     } else {
       setLoadWall(loadingImgWall)
-      setDuration(12000)
+      setDuration(10000)
     }
 
   }
@@ -149,64 +149,64 @@ function Wallvid(e){
     fd.append('image', loadWall, loadWall.name);
     fd.append('duration', duration);
     let ID = JSON.parse(localStorage.getItem("id"))
-    if(loadWallType === "video" || loadWallType === "imagen"){
+    if (loadWallType === "video" || loadWallType === "imagen") {
       props.imagenWall(ID, fd)
-      .then((f) => {
-        window.location.reload();
-      });
+        .then((f) => {
+          window.location.reload();
+        });
     }
-    if(loadWallType === "story"){
+    if (loadWallType === "story") {
       props.storiesCreator(ID, fd)
-      .then((f) => {
-        window.location.reload();
-      });
+        .then((f) => {
+          window.location.reload();
+        });
     }
   }
 
   const toggleModal = (e, id, modalValue) => {
     if (modalValue === "wall") {
-        setisItAVideo(false)
-        setIsModalOpen(!isModalOpen)
-        setI(e.target.src)
-        setModalType(e.target.id)
-        setImgID(id)
-      
+      setisItAVideo(false)
+      setIsModalOpen(!isModalOpen)
+      setI(e.target.src)
+      setModalType(e.target.id)
+      setImgID(id)
+
       fetchComments(id);
       fetchImgLikes(id);
     } else if (modalValue === "profile") {
-        setisItAVideo(false)
-        setIsModalOpen(!isModalOpen)
-        setI(e.target.src)
-        setModalType(e.target.id)
-        setImgID(id)
-      
-    } 
+      setisItAVideo(false)
+      setIsModalOpen(!isModalOpen)
+      setI(e.target.src)
+      setModalType(e.target.id)
+      setImgID(id)
+
+    }
     else if (modalValue === "video") {
-        setisItAVideo(true)
-        setIsModalOpen(!isModalOpen)
-        setI(e.target.src)
-        setModalType(e.target.id)
-        setImgID(id)
-        fetchComments(id);
-        fetchVideoLikes(id);
-      
+      setisItAVideo(true)
+      setIsModalOpen(!isModalOpen)
+      setI(e.target.src)
+      setModalType(e.target.id)
+      setImgID(id)
+      fetchComments(id);
+      fetchVideoLikes(id);
+
     } else if (modalValue === "trashId") {
-        setIsTrashModalOpen(!isTrashModalOpen)
-    
+      setIsTrashModalOpen(!isTrashModalOpen)
+
     } else if (modalValue === "likemodal") {
-        setIsLikesModalOpen(!isLikesModalOpen)
-     
+      setIsLikesModalOpen(!isLikesModalOpen)
+
     } else if (modalValue === "trashIdOff") {
-        setIsTrashModalOpen(false)
-  
+      setIsTrashModalOpen(false)
+
     }
     else {
-        setIsModalOpen(false)
-        setIsTrashModalOpen(false)
-        setIsLikesModalOpen(false)
-        setisItAVideo(false)
-        setIsTimeModalOpen(false)
-        setIsFormatModalOpen(false)
+      setIsModalOpen(false)
+      setIsTrashModalOpen(false)
+      setIsLikesModalOpen(false)
+      setisItAVideo(false)
+      setIsTimeModalOpen(false)
+      setIsFormatModalOpen(false)
     }
   }
 
@@ -225,7 +225,7 @@ function Wallvid(e){
       let currentlyOne = i;
       let forth = arraySource.indexOf(currentlyOne) + 1
       let elementForth = arraySource[forth]
-        setI(elementForth)
+      setI(elementForth)
 
       fetchPhotoId(currentlyUserId, elementForth);
     }
@@ -244,7 +244,7 @@ function Wallvid(e){
       let currentlyOne = i;
       let forth = videoArraySource.indexOf(currentlyOne) + 1
       let elementForth = videoArraySource[forth]
-        
+
       setI(elementForth)
       fetchVideoId(currentlyUserId, elementForth);
     }
@@ -306,7 +306,7 @@ function Wallvid(e){
     return fetch(baseUrl + `comments/get-comments-image/${ID}`)
       .then(data => data.json())
       .then(json => {
-          setComentarios(json)
+        setComentarios(json)
       })
       .catch(err => {
         setE(err)
@@ -322,11 +322,11 @@ function Wallvid(e){
         "Content-Type": "application/json",
         'Authorization': bearer
       },
-      credentials: "same-origin" 
+      credentials: "same-origin"
     })
       .then(data => data.json())
       .then(json => {
-          setLikes(json)
+        setLikes(json)
       })
       .catch(err => {
         setE(err)
@@ -342,11 +342,11 @@ function Wallvid(e){
         "Content-Type": "application/json",
         'Authorization': bearer
       },
-      credentials: "same-origin" 
+      credentials: "same-origin"
     })
       .then(data => data.json())
       .then(json => {
-          setLikes(json)
+        setLikes(json)
       })
       .catch(err => {
         setE(err)
@@ -363,7 +363,7 @@ function Wallvid(e){
     })
       .then(data => data.json())
       .then(json => {
-          setComentarios(comentarios.filter(item => item._id !== json._id))
+        setComentarios(comentarios.filter(item => item._id !== json._id))
       })
       .catch(err => {
         setE(err)
@@ -372,10 +372,10 @@ function Wallvid(e){
 
   const deletePhotograph = () => {
     var config = {
-          userid: JSON.parse(localStorage.getItem("id")),
-          imageid: imgID
-        }
-    if( modalType === "video"){
+      userid: JSON.parse(localStorage.getItem("id")),
+      imageid: imgID
+    }
+    if (modalType === "video") {
       props.removeVideo(config)
       props.history.push("/userpage");
       window.location.reload();
@@ -395,126 +395,126 @@ function Wallvid(e){
       image: imgID
     }
     props.commentsPost(comment)
-    .then(sol =>{
-          setComentarios(comentarios.concat(sol))
-          setActive('')
+      .then(sol => {
+        setComentarios(comentarios.concat(sol))
+        setActive('')
       })
   }
   const controlPostMessage = (e) => {
     const target = e.target;
     const value = target.value;
-      setActive(value)
+    setActive(value)
   }
 
-    if (props.user.isLoading) {
-      return (
-        <div className="container">
-          <div className="row">
-            <Loading />
-          </div>
+  if (props.user.isLoading) {
+    return (
+      <div className="container">
+        <div className="row">
+          <Loading />
         </div>
-      );
-    } else if (props.user.errMess || e) {
-      return (
-        <div className="container">
-          <div className="row">
-            <h4>{props.user.errMess}</h4>
-          </div>
+      </div>
+    );
+  } else if (props.user.errMess || e) {
+    return (
+      <div className="container">
+        <div className="row">
+          <h4>{props.user.errMess}</h4>
         </div>
-      );
-    } else {
-      return (
-        <div>
+      </div>
+    );
+  } else {
+    return (
+      <div>
 
-          <ImgProfile user={props.user.user}
+        <ImgProfile user={props.user.user}
 
           toggleModal={toggleModal}
 
           imageShowen={imageShowen}
           isItAVideo={isItAVideo}
-            isModalOpen={isModalOpen} isTimeModalOpen={isTimeModalOpen} isFormatModalOpen={isFormatModalOpen} onSubmit={handleSubmit}
-            source={i} handleimg={handleimg} imgProfileLoad={image}
-            handleWallSubmit={handleWallSubmit} arraySource={arraySource} videoArraySource={videoArraySource} likes={likes}
-            modalType={modalType} handlewallimg={setFileInfo} handleCommentSubmit={handleCommentSubmit}
-            backForthModal={backForthModal} backForthModalVideo={backForthModalVideo} isTrashModalOpen={isTrashModalOpen} isLikesModalOpen={isLikesModalOpen}
-            deletePhotograph={deletePhotograph} commentarios={comentarios} deleteComments={deleteComments}
-            controlPostMessage={controlPostMessage} active={active} loadWall={loadWall}
-          />
-          <ImgWall imagesWall={props.user.user.imagesWall}
-            videosWall={props.user.user.videosWall}
-            handleWallSubmit={handleWallSubmit}
-            handlewallimg={setFileInfo} toggleModal={toggleModal} />
-        </div>
-      )
-      }
+          isModalOpen={isModalOpen} isTimeModalOpen={isTimeModalOpen} isFormatModalOpen={isFormatModalOpen} onSubmit={handleSubmit}
+          source={i} handleimg={handleimg} imgProfileLoad={image}
+          handleWallSubmit={handleWallSubmit} arraySource={arraySource} videoArraySource={videoArraySource} likes={likes}
+          modalType={modalType} handlewallimg={setFileInfo} handleCommentSubmit={handleCommentSubmit}
+          backForthModal={backForthModal} backForthModalVideo={backForthModalVideo} isTrashModalOpen={isTrashModalOpen} isLikesModalOpen={isLikesModalOpen}
+          deletePhotograph={deletePhotograph} commentarios={comentarios} deleteComments={deleteComments}
+          controlPostMessage={controlPostMessage} active={active} loadWall={loadWall}
+        />
+        <ImgWall imagesWall={props.user.user.imagesWall}
+          videosWall={props.user.user.videosWall}
+          handleWallSubmit={handleWallSubmit}
+          handlewallimg={setFileInfo} toggleModal={toggleModal} />
+      </div>
+    )
+  }
 })
 
 const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleCommentSubmit, loadWall, isTimeModalOpen, isFormatModalOpen,
-  onSubmit, source, handleimg, arraySource, videoArraySource, backForthModal, backForthModalVideo , isTrashModalOpen, likes, active, controlPostMessage,
+  onSubmit, source, handleimg, arraySource, videoArraySource, backForthModal, backForthModalVideo, isTrashModalOpen, likes, active, controlPostMessage,
   handleWallSubmit, handlewallimg, deletePhotograph, commentarios, deleteComments, isLikesModalOpen, modalType, isItAVideo }) => {
-    const [activeVideo, setActiveVideo] = useState(false)
-    const measure = (timestamp) => {
-      let inicio = new Date(timestamp).getTime();
-      let now = Date.now();
-      let res = now - inicio;
-      const hours = (Math.floor((res)/1000))/3600;
-      return hours;
-    }
-    const storyMeasure = !user ? false : user.stories.some(h=> measure(h.timestamp) <= 24)
-    let textInput = useRef(null);
-    function handleClick() {
-      textInput.current.click();
-    }    
-    let textInputVideo = useRef(null);
-    function handleClickVideo() {
-      textInputVideo.current.click();
-    }    
-    let textInputStory = useRef(null);
-    function handleClickStory() {
-      textInputStory.current.click();
-    }
-    function play(e) {
-      if(!activeVideo) e.target.play()
-      if(activeVideo) e.target.pause()
-      setActiveVideo(!activeVideo)
-    }
-    const show = () => {
-      setActiveVideo(!activeVideo)
-    }
-    return (
+  const [activeVideo, setActiveVideo] = useState(false)
+  const measure = (timestamp) => {
+    let inicio = new Date(timestamp).getTime();
+    let now = Date.now();
+    let res = now - inicio;
+    const hours = (Math.floor((res) / 1000)) / 3600;
+    return hours;
+  }
+  const storyMeasure = !user ? false : user.stories.some(h => measure(h.timestamp) <= 24)
+  let textInput = useRef(null);
+  function handleClick() {
+    textInput.current.click();
+  }
+  let textInputVideo = useRef(null);
+  function handleClickVideo() {
+    textInputVideo.current.click();
+  }
+  let textInputStory = useRef(null);
+  function handleClickStory() {
+    textInputStory.current.click();
+  }
+  function play(e) {
+    if (!activeVideo) e.target.play()
+    if (activeVideo) e.target.pause()
+    setActiveVideo(!activeVideo)
+  }
+  const show = () => {
+    setActiveVideo(!activeVideo)
+  }
+  return (
     <div>
-      <ModalTime toggleModal={toggleModal} isTimeModalOpen={isTimeModalOpen}/>
-      <ModalFormat toggleModal={toggleModal} isFormatModalOpen={isFormatModalOpen}/>
+      <ModalTime toggleModal={toggleModal} isTimeModalOpen={isTimeModalOpen} />
+      <ModalFormat toggleModal={toggleModal} isFormatModalOpen={isFormatModalOpen} />
       <Modal isOpen={isModalOpen} toggle={() => toggleModal('', '', '')} size="lg" >
 
         {modalType === "profile" ?
           <div className="modalprofile">
-              <LocalForm onSubmit={onSubmit} encType="multipart/form-data">
-                <ModalBody >
-                  <Label htmlFor="img">
-                    <div className="imagina">
-                      {imageShowen === null ?
-                        <div className="hovertextfather" >
-                          <h6 className="hovertext">Click To Change Your Profile Picture</h6>
-                        </div>
-                        : null
-                      }
-                      <img src={imageShowen !== null ? imageShowen : source} alt="wall grid" className="w-100 h-100 mh-30 juajua" />
-                    </div>
-                    <Input
-                      type="file"
-                      id="img"
-                      name="image"
-                      className="btn-success"
-                      onChange={handleimg}
-                      style={{ display: "none" }}
-                    />
-                    <div className=" row foot" style={imageShowen !== null ? { display: "flex", alignItems: "center", justifyContent: "center" } : { display: "none" }}>
-                      <Button type="submit" onClick={onSubmit} style={{ position: "absolute" }}>Change</Button>
-                    </div>
-                  </Label>
-                </ModalBody>
-              </LocalForm>
+            <LocalForm onSubmit={onSubmit} encType="multipart/form-data">
+              <ModalBody >
+                <Label htmlFor="img">
+                  <div className="imagina">
+                    {imageShowen === null ?
+                      <div className="hovertextfather" >
+                        <h6 className="hovertext">Click To Change Your Profile Picture</h6>
+                      </div>
+                      : null
+                    }
+                    <img src={imageShowen !== null ? imageShowen : source} alt="wall grid" className="w-100 h-100 mh-30 juajua" />
+                  </div>
+                  <Input
+                    type="file"
+                    id="img"
+                    name="image"
+                    className="btn-success"
+                    onChange={handleimg}
+                    style={{ display: "none" }}
+                  />
+                  <div className=" row foot" style={imageShowen !== null ? { display: "flex", alignItems: "center", justifyContent: "center" } : { display: "none" }}>
+                    <Button type="submit" onClick={onSubmit} style={{ position: "absolute" }}>Change</Button>
+                  </div>
+                </Label>
+              </ModalBody>
+            </LocalForm>
           </div>
           : modalType === "video" ?
             <div>
@@ -526,108 +526,120 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
                 { color: "", fontSize: "40px", position: "absolute", right: "-50px", top: "40%", zIndex: "1" } : { display: "none" }}>
                 <span className="fas fa-angle-right" id="forth" onClick={(event) => backForthModalVideo(event)}></span>
               </div>
-          <LocalForm onSubmit={(values) => handleCommentSubmit(values)}>
-          <ModalBody  className="modalWithoutPadding">
-            <LikesModal isLikesModalOpen={isLikesModalOpen} toggle={toggleModal} likes={likes} usuario={user.usuario} />
-            <Modalidad>
-              <div className="modalgroup">
-                <div className="c">
-                  <div className="access-buttons-media">
-                    <div className="trashIcon">
-                      <Button onClick={(e)=> toggleModal(e, null, "trashId")}><span className=" fa fa-trash-alt "></span></Button>
-                    </div>
-                  </div> 
-                  <div  className="video-media-items">
-                  <span className={"fa fa-play play-icon-start " + (activeVideo ? "play-video" : " ")} style={{ color: '#e4e4e4', fontSize: '8vw' }}></span>
-                    <video className="resp" src={source} alt="wall grid"
-                          onClick={(e)=> play(e)}
-                          onEnded={()=> show()} />
-                  </div>
-                </div>
-                <div className="modalComments">
-                  <div className="comm">
-                    <RenderComments comentarios={commentarios} deleteComments={deleteComments} usuario={user.usuario} />
-                  </div>
-                  <div>{
-                    likes.length > 0
-                      ?
-                      <h6>Le gusta esta foto a <strong id="likemodal" className="cursor" onClick={(event) => toggleModal(event, null, "likemodal")} >{likes.length} usuarios</strong></h6>
-                      :
-                      <h6>Se el primero en marcar me gusta</h6>
-                  }</div>
-                  <div className="foot">
-                    <div className="texto">
-                      <Control.textarea className="h-100" model=".comment" id="comment" value={active} onChange={(e) => controlPostMessage(e)}/>
-                    </div>
-                    <div className="footButtons">
-                      <div className="buton btn-sm h-100" >
-                      {active.length === 0 || active.length > 140 ?
-                        <Button type="submit" className="btn-sm h-100" disabled><span className="fas fa-paper-plane"></span></Button>
-                        :
-                        <Button type="submit" className="btn-sm h-100"><span className="fas fa-paper-plane"></span></Button>
-                      }
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Modalidad>
-          </ModalBody>
-        </LocalForm>
-        </div>
-          :
-          <div>
-          <div className="cursor" style={isModalOpen && modalType === "wall" && arraySource.indexOf(source) !== 0 ?
-            { color: "black", fontSize: "40px", position: "absolute", left: "-50px", top: "40%", zIndex: "1" } : { display: "none" }}>
-            <span className="fas fa-angle-left" id="back" onClick={(event) => backForthModal(event)}></span>
-          </div>
-          <div className="cursor" style={isModalOpen && modalType === "wall" && arraySource.indexOf(source) !== arraySource.length - 1 ?
-            { color: "", fontSize: "40px", position: "absolute", right: "-50px", top: "40%", zIndex: "1" } : { display: "none" }}>
-            <span className="fas fa-angle-right" id="forth" onClick={(event) => backForthModal(event)}></span>
-          </div>
-            <LocalForm onSubmit={(values) => handleCommentSubmit(values)}>
-              <ModalBody className="modalWithoutPadding">
-                <LikesModal isLikesModalOpen={isLikesModalOpen} toggle={toggleModal} likes={likes} usuario={user.usuario}/>
-                <Modalidad>
-                  <div className="modalgroup">
-                    <div className="c">
-                      <div className="access-buttons-media">
-                        <div className="trashIcon">
-                          <Button onClick={(e)=> toggleModal(e, null, "trashId")}><span className=" fa fa-trash-alt "></span></Button>
+              <LocalForm onSubmit={(values) => handleCommentSubmit(values)}>
+                <ModalBody className="modalWithoutPadding">
+                  <LikesModal isLikesModalOpen={isLikesModalOpen} toggle={toggleModal} likes={likes} usuario={user.usuario} />
+                  <Modalidad>
+                    <div className="modalgroup">
+                      <div className="c">
+                        <div className="access-buttons-media">
+                          <div className="trashIcon">
+                            <Button onClick={(e) => toggleModal(e, null, "trashId")}><span className=" fa fa-trash-alt "></span></Button>
+                          </div>
+                        </div>
+                        <div className="video-media-items">
+                          <span className={"fa fa-play play-icon-start " + (activeVideo ? "play-video" : " ")} style={{ color: '#e4e4e4', fontSize: '8vw' }}></span>
+                          <video className="resp" src={source} alt="wall grid"
+                            onClick={(e) => play(e)}
+                            onEnded={() => show()} />
                         </div>
                       </div>
-                      <img className="resp" src={source} alt="wall grid" />
-                    </div>
-                    <div className="modalComments">
-                      <div className="comm">
-                        <RenderComments comentarios={commentarios} deleteComments={deleteComments} usuario={user.usuario} />
-                      </div>
-                      <div>{
-                        likes.length > 0
-                          ?
-                          <h6 style={{marginLeft: "10px"}}>Le gusta esta foto a <strong id="likemodal" className="cursor" onClick={(event) => toggleModal(event, null, "likemodal")} >{likes.length} usuarios</strong></h6>
-                          :
-                          <h6 style={{marginLeft: "10px"}}>Se el primero en marcar me gusta</h6>
-                      }</div>
-                      <div className="foot">
-                        <div className="texto">
-                          <Control.textarea className="h-100" model=".comment" id="comment" value={active} onChange={(e) => controlPostMessage(e)}/>
+                      <div className="modalComments">
+                        <div className="comm">
+                          <RenderComments comentarios={commentarios} deleteComments={deleteComments} usuario={user.usuario} />
                         </div>
-                        <div className="footButtons">
-                          <div className="buton btn-sm h-100" >
-                          {active.length === 0 || active.length > 140 ?
-                            <Button type="submit" className="btn-sm h-100" disabled><span className="fas fa-paper-plane"></span></Button>
-                            :
-                            <Button type="submit" className="btn-sm h-100"><span className="fas fa-paper-plane"></span></Button>
+                        <div>
+                          {
+                            likes.length === 1
+                              ?
+                              <h6 style={{ marginLeft: "10px" }}><strong className="cursor" onClick={(event) => toggleModal(event, null, "likemodal")} >{likes.length} person like it.</strong></h6>
+                              :
+                              likes.length > 1
+                                ?
+                                <h6 style={{ marginLeft: "10px" }}><strong className="cursor" onClick={(event) => toggleModal(event, null, "likemodal")} >{likes.length} people like it.</strong></h6>
+                                :
+                                <h6 style={{ marginLeft: "10px" }}>Be the first to like.</h6>
                           }
+                        </div>
+                        <div className="foot">
+                          <div className="texto">
+                            <Control.textarea className="h-100" model=".comment" id="comment" value={active} onChange={(e) => controlPostMessage(e)} />
+                          </div>
+                          <div className="footButtons">
+                            <div className="buton btn-sm h-100" >
+                              {active.length === 0 || active.length > 140 ?
+                                <Button type="submit" className="btn-sm h-100" disabled><span className="fas fa-paper-plane"></span></Button>
+                                :
+                                <Button type="submit" className="btn-sm h-100"><span className="fas fa-paper-plane"></span></Button>
+                              }
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </Modalidad>
-              </ModalBody>
-            </LocalForm>
+                  </Modalidad>
+                </ModalBody>
+              </LocalForm>
+            </div>
+            :
+            <div>
+              <div className="cursor" style={isModalOpen && modalType === "wall" && arraySource.indexOf(source) !== 0 ?
+                { color: "black", fontSize: "40px", position: "absolute", left: "-50px", top: "40%", zIndex: "1" } : { display: "none" }}>
+                <span className="fas fa-angle-left" id="back" onClick={(event) => backForthModal(event)}></span>
+              </div>
+              <div className="cursor" style={isModalOpen && modalType === "wall" && arraySource.indexOf(source) !== arraySource.length - 1 ?
+                { color: "", fontSize: "40px", position: "absolute", right: "-50px", top: "40%", zIndex: "1" } : { display: "none" }}>
+                <span className="fas fa-angle-right" id="forth" onClick={(event) => backForthModal(event)}></span>
+              </div>
+              <LocalForm onSubmit={(values) => handleCommentSubmit(values)}>
+                <ModalBody className="modalWithoutPadding">
+                  <LikesModal isLikesModalOpen={isLikesModalOpen} toggle={toggleModal} likes={likes} usuario={user.usuario} />
+                  <Modalidad>
+                    <div className="modalgroup">
+                      <div className="c">
+                        <div className="access-buttons-media">
+                          <div className="trashIcon">
+                            <Button onClick={(e) => toggleModal(e, null, "trashId")}><span className=" fa fa-trash-alt "></span></Button>
+                          </div>
+                        </div>
+                        <img className="resp" src={source} alt="wall grid" />
+                      </div>
+                      <div className="modalComments">
+                        <div className="comm">
+                          <RenderComments comentarios={commentarios} deleteComments={deleteComments} usuario={user.usuario} />
+                        </div>
+                        <div>
+                           {
+                            likes.length === 1
+                              ?
+                              <h6 style={{ marginLeft: "10px" }}><strong className="cursor" onClick={(event) => toggleModal(event, null, "likemodal")} >{likes.length} person like it.</strong></h6>
+                              :
+                              likes.length > 1
+                                ?
+                                <h6 style={{ marginLeft: "10px" }}><strong className="cursor" onClick={(event) => toggleModal(event, null, "likemodal")} >{likes.length} people like it.</strong></h6>
+                                :
+                                <h6 style={{ marginLeft: "10px" }}>Be the first to like.</h6>
+                          }
+                        </div>
+                        <div className="foot">
+                          <div className="texto">
+                            <Control.textarea className="h-100" model=".comment" id="comment" value={active} onChange={(e) => controlPostMessage(e)} />
+                          </div>
+                          <div className="footButtons">
+                            <div className="buton btn-sm h-100" >
+                              {active.length === 0 || active.length > 140 ?
+                                <Button type="submit" className="btn-sm h-100" disabled><span className="fas fa-paper-plane"></span></Button>
+                                :
+                                <Button type="submit" className="btn-sm h-100"><span className="fas fa-paper-plane"></span></Button>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Modalidad>
+                </ModalBody>
+              </LocalForm>
             </div>
         }
 
@@ -637,7 +649,7 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
       <div className="container ">
         <ProfileImage>
           <div className="image-content cursor">
-            <canvas className="outos"/>
+            <canvas className="outos" />
             <img
               src={baseUrl + user.image.filename}
               alt={user._id}
@@ -647,7 +659,7 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
               onClick={(e) => toggleModal(e, user._id, "profile")}
             />
           </div>
-          
+
 
         </ProfileImage>
 
@@ -656,66 +668,66 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
           <div className="user-info-description">
             <h5 className="">{user.firstname} {user.lastname}</h5>
             <h5 className="">{`"${user.phrase}"`}</h5>
-            <h5 className="">{user.followers.length} Seguidores - {user.following.length} Seguidos</h5>
+            <h5 className="">{user.followers.length} Followers - {user.following.length} Following</h5>
           </div>
           <div>
-          {loadWall === null ?
-           <div className="media-botonera">
-            <div className="user-info-post">
-            
-              <div>
-                <input
-                  type="file"
-                  id="imagen"
-                  name="image"
-                  onChange={handlewallimg}
-                  ref={textInput}
-                  style={{ display: "none" }}
-                />
-                <button className="fa fa-image fa-md" onClick={handleClick} />
-              </div>
-            </div>
+            {loadWall === null ?
+              <div className="media-botonera">
+                <div className="user-info-post">
 
-            <div className="user-info-post">
-           
-              <div>
-                <input
-                  type="file"
-                  id="video"
-                  name="image"
-                  onChange={handlewallimg}
-                  ref={textInputVideo}
-                  style={{ display: "none" }}
-                />
-                <button className="fa fa-film fa-md" onClick={handleClickVideo} />
-              </div>
-            </div>
+                  <div>
+                    <input
+                      type="file"
+                      id="imagen"
+                      name="image"
+                      onChange={handlewallimg}
+                      ref={textInput}
+                      style={{ display: "none" }}
+                    />
+                    <button className="fa fa-image fa-md" onClick={handleClick} />
+                  </div>
+                </div>
 
-            <div className="user-info-post">
-              <div>
-                <input
-                  type="file"
-                  id="story"
-                  name="image"
-                  onChange={handlewallimg}
-                  ref={textInputStory}
-                  style={{ display: "none" }}
-                />
-                <button className="fa fa-video fa-md" onClick={handleClickStory} />
+                <div className="user-info-post">
+
+                  <div>
+                    <input
+                      type="file"
+                      id="video"
+                      name="image"
+                      onChange={handlewallimg}
+                      ref={textInputVideo}
+                      style={{ display: "none" }}
+                    />
+                    <button className="fa fa-film fa-md" onClick={handleClickVideo} />
+                  </div>
+                </div>
+
+                <div className="user-info-post">
+                  <div>
+                    <input
+                      type="file"
+                      id="story"
+                      name="image"
+                      onChange={handlewallimg}
+                      ref={textInputStory}
+                      style={{ display: "none" }}
+                    />
+                    <button className="fa fa-video fa-md" onClick={handleClickStory} />
+                  </div>
+                </div>
               </div>
-            </div>
-            </div>
-            : loadWall.name !== undefined ?
-            <Form onSubmit={handleWallSubmit} encType="multipart/form-data" >
-                <Button onClick={handleWallSubmit}>Enviar</Button>
-            </Form>
-           : null
-           
-        }
+              : loadWall.name !== undefined ?
+                <Form onSubmit={handleWallSubmit} encType="multipart/form-data" >
+                  <Button onClick={handleWallSubmit}>Enviar</Button>
+                </Form>
+                : null
+
+            }
+          </div>
         </div>
-        </div>
-        </div>
-        </div>
+      </div>
+    </div>
   )
 }
 const ImgWall = ({ imagesWall, videosWall, handleWallSubmit, handlewallimg, toggleModal }) => {
@@ -727,72 +739,72 @@ const ImgWall = ({ imagesWall, videosWall, handleWallSubmit, handlewallimg, togg
   }
 
   let screen = width >= 600 ? true : false
-    const Imagenes = 
-      imagesWall && screen ?
-        imagesWall.map((img) => {
-      return (
-        <div className="image-content cursor" key={img._id}>
-          <img className="img-thumbnail img-grid" id="wall" src={baseUrl + img.filename} alt={img._id} onClick={(e) => toggleModal(e, img._id, "wall")} />
-        </div>
-      )
-      })
-    :
-    imagesWall.map((img) => {
-      return (
-        <div className="image-content" key={img._id}>
-          <Link to={`/view/imagenwall/${img._id}`}>
+  const Imagenes =
+    imagesWall && screen ?
+      imagesWall.map((img) => {
+        return (
+          <div className="image-content cursor" key={img._id}>
             <img className="img-thumbnail img-grid" id="wall" src={baseUrl + img.filename} alt={img._id} onClick={(e) => toggleModal(e, img._id, "wall")} />
-          </Link>
-        </div>
-      )
-    })
-    const Videos = 
+          </div>
+        )
+      })
+      :
+      imagesWall.map((img) => {
+        return (
+          <div className="image-content" key={img._id}>
+            <Link to={`/view/imagenwall/${img._id}`}>
+              <img className="img-thumbnail img-grid" id="wall" src={baseUrl + img.filename} alt={img._id} onClick={(e) => toggleModal(e, img._id, "wall")} />
+            </Link>
+          </div>
+        )
+      })
+  const Videos =
     videosWall && screen ?
-    videosWall.map((vid) => {
-    return (
-      <div className="image-content cursor" key={vid._id}>
-        <video className="img-thumbnail img-grid" id="video" src={baseUrl + vid.filename} alt={vid._id} onClick={(e) => toggleModal(e, vid._id, "video")} />
-      </div>
-    )
-    })
-  :
-  videosWall.map((vid) => {
-    return (
-      <div className="image-content" key={vid._id}>
-        <Link to={`/view/imagenwall/${vid._id}`}>
-          <video className="img-thumbnail img-grid" id="video" src={baseUrl + vid.filename} alt={vid._id} onClick={(e) => toggleModal(e, vid._id, "video")} />
-        </Link>
-      </div>
-    )
-  }) 
-  
+      videosWall.map((vid) => {
+        return (
+          <div className="image-content cursor" key={vid._id}>
+            <video className="img-thumbnail img-grid" id="video" src={baseUrl + vid.filename} alt={vid._id} onClick={(e) => toggleModal(e, vid._id, "video")} />
+          </div>
+        )
+      })
+      :
+      videosWall.map((vid) => {
+        return (
+          <div className="image-content" key={vid._id}>
+            <Link to={`/view/imagenwall/${vid._id}`}>
+              <video className="img-thumbnail img-grid" id="video" src={baseUrl + vid.filename} alt={vid._id} onClick={(e) => toggleModal(e, vid._id, "video")} />
+            </Link>
+          </div>
+        )
+      })
+
 
   return (
     <div>
-        <div className="wall-container mediatab">
-            <Nav tabs className="row h-5 mediatab">
-                <NavItem className="col-6 cursor">
-                    <NavLink
-                        className={classnames({ active: activeTab === '1' })}
-                        onClick={() => { toggle('1'); }}>
-                        Imagenes
-                    </NavLink>
-                </NavItem>
-                <NavItem className="col-6 cursor">
-                    <NavLink
-                        className={classnames({ active: activeTab === '2' })}
-                        onClick={() => { toggle('2'); }}>
-                        Videos
-                    </NavLink>
-                </NavItem>
-            </Nav>
-        </div>
-        <div className={(activeTab === '1' ? "wall-container" : 'desactivado')}>
-            {Imagenes}
-        </div>
-        <div className={(activeTab === '2' ? "wall-container" : 'desactivado')}>
-            {Videos}
-        </div>
+      <div className="wall-container mediatab">
+        <Nav tabs className="row h-5 mediatab">
+          <NavItem className="col-6 cursor">
+            <NavLink
+              className={classnames({ active: activeTab === '1' })}
+              onClick={() => { toggle('1'); }}>
+              Images
+            </NavLink>
+          </NavItem>
+          <NavItem className="col-6 cursor">
+            <NavLink
+              className={classnames({ active: activeTab === '2' })}
+              onClick={() => { toggle('2'); }}>
+              Videos
+            </NavLink>
+          </NavItem>
+        </Nav>
+      </div>
+      <div className={(activeTab === '1' ? "wall-container" : 'desactivado')}>
+        {Imagenes}
+      </div>
+      <div className={(activeTab === '2' ? "wall-container" : 'desactivado')}>
+        {Videos}
+      </div>
     </div>
   )
 }
@@ -809,7 +821,7 @@ const ModalExample = (props) => {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={props.deletePhotograph}>Delete Photo</Button>{' '}
-          <Button color="secondary"   onClick={(event) => props.toggleModal(event, null ,"trashId")}>Cancel</Button>
+          <Button color="secondary" onClick={(event) => props.toggleModal(event, null, "trashId")}>Cancel</Button>
         </ModalFooter>
       </Modal>
     </div>
@@ -821,10 +833,9 @@ const ModalTime = (props) => {
   return (
     <div>
       <Modal isOpen={props.isTimeModalOpen} >
-        <ModalHeader >Duracion Excedida</ModalHeader>
+        <ModalHeader >Exceeded Duration</ModalHeader>
         <ModalBody >
-          El video que intentaste publicar excede la duracion maxima de 1 minuto. Por favor, intente con otro video.
-        </ModalBody>
+        The video you tried to post exceeds the maximum length of 1 minute. Please try another video.        </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={() => props.toggleModal('', '', '')} >Cancel</Button>
         </ModalFooter>
@@ -838,9 +849,9 @@ const ModalFormat = (props) => {
   return (
     <div>
       <Modal isOpen={props.isFormatModalOpen}>
-        <ModalHeader >Error de formato</ModalHeader>
+        <ModalHeader >Format file error.</ModalHeader>
         <ModalBody >
-          Por favor, intente con otro archivo o elija y presione otro boton.
+        Please try another file or, choose and press another button.
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={() => props.toggleModal('', '', '')} >Cancel</Button>

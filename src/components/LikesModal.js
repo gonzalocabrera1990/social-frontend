@@ -20,7 +20,7 @@ export const LikesModal = (props) => {
     return (
         <div>
             <Modal isOpen={props.isLikesModalOpen} toggle={props.toggle}>
-                <ModalHeader id="likemodal" toggle={(e) => props.toggle(e)}><span>Me gusta</span></ModalHeader>
+                <ModalHeader id="likemodal" toggle={(e) => props.toggle(e)}><span>Likes</span></ModalHeader>
                 <ModalBody>
                     <ModalLikes>
                             {megustaamigos}

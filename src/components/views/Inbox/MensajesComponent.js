@@ -49,14 +49,14 @@ export const Mensajes = (props) => {
         return (
             <div  className="container-fluid inbox" >
                 <div className="row p-0 ml-2 align-items-center">
-                    <h5>Mensajes</h5>
+                    <h5>Messages</h5>
                     <div className="justify-content-end">{INBOX}</div>
                 </div>
                 <div ref={chatContainer} className="inboxes">
                     {!props.chatTitle[0] ?
                         <div>
-                            <h1>Estado de la Conversacion</h1>
-                            <h4>Elije una conversacion o un Amigo</h4>
+                            <h1>Chat condition</h1>
+                            <h4>Click and choose a chat or followers</h4>
                         </div>
                         :
                         <div className="message-display"> 

@@ -8,82 +8,86 @@ import { RenderComments } from './CommentComponent';
 import { LikesModal } from './LikesModal';
 import { baseUrl } from '../shared/baseUrl';
 
-export const ModalComponent = (props) =>{
+export const ModalComponent = (props) => {
   const [activeVideo, setActiveVideo] = useState(false)
   let likesLength = !props.likes ? [] : props.likes;
   let imagen
-  if(props.media === "wall") {
+  if (props.media === "wall") {
     imagen = !props.img ? "" : baseUrl + props.img.imageId.filename
-  } else if(props.media === "video") {
+  } else if (props.media === "video") {
     imagen = !props.img ? "" : baseUrl + props.img.videoId.filename
-  } else if(props.media === "imagen") {
+  } else if (props.media === "imagen") {
     imagen = !props.img ? "" : baseUrl + props.img.imageId.filename
   }
   function play(e) {
-    if(!activeVideo) e.target.play()
-    if(activeVideo) e.target.pause()
+    if (!activeVideo) e.target.play()
+    if (activeVideo) e.target.pause()
     setActiveVideo(!activeVideo)
   }
   const show = () => {
     setActiveVideo(!activeVideo)
   }
-  
-return (
+
+  return (
     <div>
       <Modal isOpen={props.isModalOpen} toggle={props.toggleModal} size="lg" >
-      <LikesModal isLikesModalOpen={props.isLikesModalOpen} toggle={props.toggleModal} likes={props.likes} usuario={props.usuario} />
-      <LocalForm onSubmit={(values, event) => props.handleSubmit(values, event)}>
-        <ModalBody className="modalWithoutPadding center-comments">
-          <Modalidad>
-            <div className="modalgroup">
-              <div className="c">
-                {
-                  props.media === "imagen" ?
-                  <img className="resp" src={imagen} alt="wall grid" />
-                  :
-                  <div  className="video-media-items">
-                    <span className={"fa fa-play play-icon-start " + (activeVideo ? "play-video" : " ")} style={{ color: '#e4e4e4', fontSize: '8vw' }}></span>
-                    <video className="responsive" 
-                    src={imagen} alt="wall grid" 
-                    onClick={(e)=> play(e)} 
-                    onEnded={()=> show()}/>
+        <LikesModal isLikesModalOpen={props.isLikesModalOpen} toggle={props.toggleModal} likes={props.likes} usuario={props.usuario} />
+        <LocalForm onSubmit={(values, event) => props.handleSubmit(values, event)}>
+          <ModalBody className="modalWithoutPadding center-comments">
+            <Modalidad>
+              <div className="modalgroup">
+                <div className="c">
+                  {
+                    props.media === "imagen" ?
+                      <img className="resp" src={imagen} alt="wall grid" />
+                      :
+                      <div className="video-media-items">
+                        <span className={"fa fa-play play-icon-start " + (activeVideo ? "play-video" : " ")} style={{ color: '#e4e4e4', fontSize: '8vw' }}></span>
+                        <video className="responsive"
+                          src={imagen} alt="wall grid"
+                          onClick={(e) => play(e)}
+                          onEnded={() => show()} />
+                      </div>
+                  }
+                </div>
+                <div className="modalComments">
+                  <div className="comm">
+                    <RenderComments comentarios={props.comments} deleteComments={props.deleteComments} usuario={props.usuario} />
                   </div>
-                }
-              </div>
-              <div className="modalComments">
-              <div className="comm">
-                        <RenderComments comentarios={props.comments} deleteComments={props.deleteComments} usuario={props.usuario}/>
-                      </div>
-                      <div>
-                      {
-                        likesLength.length > 0
+                  <div>
+                    {
+                      likesLength.length === 1
                         ?
-                        <h6 style={{marginLeft: "10px"}}>Le gusta esta foto a <strong className="cursor" onClick={(event) => props.toggleModal(event, "likemodal")} >{props.likes.length} usuarios</strong></h6>
+                        <h6 style={{ marginLeft: "10px" }}><strong className="cursor" onClick={(event) => props.toggleModal(event, "likemodal")} >{props.likes.length} person like it.</strong></h6>
                         :
-                        <h6 style={{marginLeft: "10px"}}>Se el primero en marcar me gusta</h6>
-                      }
-                          </div>
-                      <div className="foot">
-                        <div className="texto h-100">
-                          <Control.textarea className="h-100" model=".comment" id="comment" value={props.active} onChange={(e) =>props.controlPostMessage(e)} />
-                        </div>
-                        <div className="footButtons">
-                          <div className="buton btn-sm" >
-                            {props.active.length === 0 || props.active.length > 140 ?
-                            <Button type="submit" className="btn-sm h-100" disabled><span className="fas fa-paper-plane"></span></Button>
-                            :
-                            <Button type="submit" className="btn-sm h-100"><span className="fas fa-paper-plane"></span></Button>
-                            }
-                          </div>
-                        </div>
+                        likesLength.length > 1
+                          ?
+                          <h6 style={{ marginLeft: "10px" }}><strong className="cursor" onClick={(event) => props.toggleModal(event, "likemodal")} >{props.likes.length} people like it.</strong></h6>
+                          :
+                          <h6 style={{ marginLeft: "10px" }}>Be the first to like.</h6>
+                    }
+                  </div>
+                  <div className="foot">
+                    <div className="texto h-100">
+                      <Control.textarea className="h-100" model=".comment" id="comment" value={props.active} onChange={(e) => props.controlPostMessage(e)} />
+                    </div>
+                    <div className="footButtons">
+                      <div className="buton btn-sm" >
+                        {props.active.length === 0 || props.active.length > 140 ?
+                          <Button type="submit" className="btn-sm h-100" disabled><span className="fas fa-paper-plane"></span></Button>
+                          :
+                          <Button type="submit" className="btn-sm h-100"><span className="fas fa-paper-plane"></span></Button>
+                        }
                       </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </Modalidad>
-        </ModalBody>
+            </Modalidad>
+          </ModalBody>
         </LocalForm>
       </Modal>
-      </div>
+    </div>
   )
 }
 
