@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import {
-  Button, Modal, ModalBody
+  Button, Modal, ModalBody, Form, Input
 } from 'reactstrap';
-import { Control, LocalForm } from 'react-redux-form';
 import styled from 'styled-components'
 import { RenderComments } from './CommentComponent';
 import { LikesModal } from './LikesModal';
@@ -32,7 +31,7 @@ export const ModalComponent = (props) => {
     <div>
       <Modal isOpen={props.isModalOpen} toggle={props.toggleModal} size="lg" >
         <LikesModal isLikesModalOpen={props.isLikesModalOpen} toggle={props.toggleModal} likes={props.likes} usuario={props.usuario} />
-        <LocalForm onSubmit={(values, event) => props.handleSubmit(values, event)}>
+         <Form >
           <ModalBody className="modalWithoutPadding center-comments">
             <Modalidad>
               <div className="modalgroup">
@@ -69,14 +68,14 @@ export const ModalComponent = (props) => {
                   </div>
                   <div className="foot">
                     <div className="texto h-100">
-                      <Control.textarea className="h-100" model=".comment" id="comment" value={props.active} onChange={(e) => props.controlPostMessage(e)} />
+                      <Input type="textarea" className="h-100" model=".comment" id="comment" value={props.active} onChange={(e) => props.controlPostMessage(e)} />
                     </div>
                     <div className="footButtons">
                       <div className="buton btn-sm" >
                         {props.active.length === 0 || props.active.length > 140 ?
-                          <Button type="submit" className="btn-sm h-100" disabled><span className="fas fa-paper-plane"></span></Button>
+                          <Button className="btn-sm h-100" disabled><span className="fas fa-paper-plane"></span></Button>
                           :
-                          <Button type="submit" className="btn-sm h-100"><span className="fas fa-paper-plane"></span></Button>
+                          <Button onClick={(event) => props.handleSubmit(event)}className="btn-sm h-100"><span className="fas fa-paper-plane"></span></Button>
                         }
                       </div>
                     </div>
@@ -85,7 +84,7 @@ export const ModalComponent = (props) => {
               </div>
             </Modalidad>
           </ModalBody>
-        </LocalForm>
+        </Form>
       </Modal>
     </div>
   )

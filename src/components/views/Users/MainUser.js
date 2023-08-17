@@ -7,13 +7,13 @@ import {
   Button, Modal, ModalBody, ModalHeader, ModalFooter,
   Nav, NavItem, NavLink
 } from 'reactstrap';
-import { Control, LocalForm } from 'react-redux-form';
 import classnames from 'classnames';
 import styled from 'styled-components'
 import { RenderComments } from '../../CommentComponent';
 import { LikesModal } from '../../LikesModal';
 import { Loading } from '../../LoadingComponent';
 import { baseUrl } from '../../../shared/baseUrl';
+import { getHelper, postHelperBody, deleteHelper } from '../../../redux/fetchsHelpers'
 
 function useWindowSize() {
   const [size, setSize] = useState([0]);
@@ -74,9 +74,6 @@ export const MainUser = withRouter((props) => {
     filedata.append('image', image, image.name);
     let ID = props.auth.user.username;
     props.imagenUser(ID, filedata)
-      .then(() => {
-        window.location.reload();
-      });
   }
 
   //ENVIA LOS DATOS A REDUX PARA LAS IMAGENES DEL MURO
@@ -151,9 +148,6 @@ export const MainUser = withRouter((props) => {
     let ID = JSON.parse(localStorage.getItem("id"))
     if (loadWallType === "video" || loadWallType === "imagen") {
       props.imagenWall(ID, fd)
-        .then((f) => {
-          window.location.reload();
-        });
     }
     if (loadWallType === "story") {
       props.storiesCreator(ID, fd)
@@ -255,14 +249,15 @@ export const MainUser = withRouter((props) => {
     var config = {
       foto: bodyPath
     };
-    return fetch(baseUrl + `users/returnid/${ID}`, {
-      method: "POST",
-      body: JSON.stringify(config),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(data => data.json())
+    // return fetch(baseUrl + `users/returnid/${ID}`, {
+    //   method: "POST",
+    //   body: JSON.stringify(config),
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   }
+    // })
+    //   .then(data => data.json())
+      postHelperBody(`users/returnid/${ID}`, config)
       .then(response => {
         let result = response.result
         setImgID(result)
@@ -281,14 +276,15 @@ export const MainUser = withRouter((props) => {
     var config = {
       foto: bodyPath
     };
-    return fetch(baseUrl + `users/returnid-video/${ID}`, {
-      method: "POST",
-      body: JSON.stringify(config),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(data => data.json())
+    // return fetch(baseUrl + `users/returnid-video/${ID}`, {
+    //   method: "POST",
+    //   body: JSON.stringify(config),
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   }
+    // })
+    //   .then(data => data.json())
+    postHelperBody(`users/returnid-video/${ID}`, config)
       .then(response => {
         let result = response.result
         setImgID(result)
@@ -303,8 +299,9 @@ export const MainUser = withRouter((props) => {
       })
   }
   const fetchComments = (ID) => {
-    return fetch(baseUrl + `comments/get-comments-image/${ID}`)
-      .then(data => data.json())
+    // return fetch(baseUrl + `comments/get-comments-image/${ID}`)
+    //   .then(data => data.json())
+      getHelper(`comments/get-comments-image/${ID}`)
       .then(json => {
         setComentarios(json)
       })
@@ -315,16 +312,17 @@ export const MainUser = withRouter((props) => {
   const fetchImgLikes = (img) => {
     let userId = JSON.parse(localStorage.getItem("id"))
     let imgId = img;
-    const bearer = 'Bearer ' + localStorage.getItem("token");
-    return fetch(baseUrl + `likes/get-i-like-it/${userId}/${imgId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': bearer
-      },
-      credentials: "same-origin"
-    })
-      .then(data => data.json())
+    // const bearer = 'Bearer ' + localStorage.getItem("token");
+    // return fetch(baseUrl + `likes/get-i-like-it/${userId}/${imgId}`, {
+    //   method: "GET",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     'Authorization': bearer
+    //   },
+    //   credentials: "same-origin"
+    // })
+    //   .then(data => data.json())
+    getHelper(`likes/get-i-like-it/${userId}/${imgId}`)
       .then(json => {
         setLikes(json)
       })
@@ -335,16 +333,17 @@ export const MainUser = withRouter((props) => {
   const fetchVideoLikes = (img) => {
     let userId = JSON.parse(localStorage.getItem("id"))
     let imgId = img;
-    const bearer = 'Bearer ' + localStorage.getItem("token");
-    return fetch(baseUrl + `likes/get-i-like-it-video/${userId}/${imgId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': bearer
-      },
-      credentials: "same-origin"
-    })
-      .then(data => data.json())
+    // const bearer = 'Bearer ' + localStorage.getItem("token");
+    // return fetch(baseUrl + `likes/get-i-like-it-video/${userId}/${imgId}`, {
+    //   method: "GET",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     'Authorization': bearer
+    //   },
+    //   credentials: "same-origin"
+    // })
+    //   .then(data => data.json())
+    getHelper(`likes/get-i-like-it-video/${userId}/${imgId}`)
       .then(json => {
         setLikes(json)
       })
@@ -353,15 +352,16 @@ export const MainUser = withRouter((props) => {
       })
   }
   const deleteComments = (ID) => {
-    const bearer = 'Bearer ' + localStorage.getItem('token');
-    return fetch(baseUrl + `comments/get-comments-image/${ID}`, {
-      method: "DELETE",
-      headers: {
-        'Authorization': bearer,
-        "Content-Type": "application/json"
-      }
-    })
-      .then(data => data.json())
+    //const bearer = 'Bearer ' + localStorage.getItem('token');
+    // return fetch(baseUrl + `comments/get-comments-image/${ID}`, {
+    //   method: "DELETE",
+    //   headers: {
+    //     'Authorization': bearer,
+    //     "Content-Type": "application/json"
+    //   }
+    // })
+    //   .then(data => data.json())
+    deleteHelper(`comments/get-comments-image/${ID}`)
       .then(json => {
         setComentarios(comentarios.filter(item => item._id !== json._id))
       })
@@ -387,10 +387,10 @@ export const MainUser = withRouter((props) => {
   }
 
 
-  const handleCommentSubmit = (values) => {
-
+  const handleCommentSubmit = (e) => {
+    e.preventDefault()
     const comment = {
-      comment: values.comment,
+      comment: active,
       author: JSON.parse(localStorage.getItem("id")),
       image: imgID
     }
@@ -489,7 +489,7 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
 
         {modalType === "profile" ?
           <div className="modalprofile">
-            <LocalForm onSubmit={onSubmit} encType="multipart/form-data">
+            <Form onSubmit={onSubmit} encType="multipart/form-data">
               <ModalBody >
                 <Label htmlFor="img">
                   <div className="imagina">
@@ -514,7 +514,7 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
                   </div>
                 </Label>
               </ModalBody>
-            </LocalForm>
+            </Form>
           </div>
           : modalType === "video" ?
             <div>
@@ -526,7 +526,7 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
                 { color: "", fontSize: "40px", position: "absolute", right: "-50px", top: "40%", zIndex: "1" } : { display: "none" }}>
                 <span className="fas fa-angle-right" id="forth" onClick={(event) => backForthModalVideo(event)}></span>
               </div>
-              <LocalForm onSubmit={(values) => handleCommentSubmit(values)}>
+              <Form onSubmit={(event) => handleCommentSubmit(event)}>
                 <ModalBody className="modalWithoutPadding">
                   <LikesModal isLikesModalOpen={isLikesModalOpen} toggle={toggleModal} likes={likes} usuario={user.usuario} />
                   <Modalidad>
@@ -563,7 +563,7 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
                         </div>
                         <div className="foot">
                           <div className="texto">
-                            <Control.textarea className="h-100" model=".comment" id="comment" value={active} onChange={(e) => controlPostMessage(e)} />
+                            <Input type="textarea" className="h-100" model=".comment" id="comment" value={active} onChange={(e) => controlPostMessage(e)} />
                           </div>
                           <div className="footButtons">
                             <div className="buton btn-sm h-100" >
@@ -579,7 +579,7 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
                     </div>
                   </Modalidad>
                 </ModalBody>
-              </LocalForm>
+              </Form>
             </div>
             :
             <div>
@@ -591,7 +591,7 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
                 { color: "", fontSize: "40px", position: "absolute", right: "-50px", top: "40%", zIndex: "1" } : { display: "none" }}>
                 <span className="fas fa-angle-right" id="forth" onClick={(event) => backForthModal(event)}></span>
               </div>
-              <LocalForm onSubmit={(values) => handleCommentSubmit(values)}>
+              <Form onSubmit={(event) => handleCommentSubmit(event)}>
                 <ModalBody className="modalWithoutPadding">
                   <LikesModal isLikesModalOpen={isLikesModalOpen} toggle={toggleModal} likes={likes} usuario={user.usuario} />
                   <Modalidad>
@@ -609,7 +609,7 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
                           <RenderComments comentarios={commentarios} deleteComments={deleteComments} usuario={user.usuario} />
                         </div>
                         <div>
-                           {
+                          {
                             likes.length === 1
                               ?
                               <h6 style={{ marginLeft: "10px" }}><strong className="cursor" onClick={(event) => toggleModal(event, null, "likemodal")} >{likes.length} person like it.</strong></h6>
@@ -623,7 +623,7 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
                         </div>
                         <div className="foot">
                           <div className="texto">
-                            <Control.textarea className="h-100" model=".comment" id="comment" value={active} onChange={(e) => controlPostMessage(e)} />
+                            <Input type="textarea" className="h-100" model=".comment" id="comment" value={active} onChange={(e) => controlPostMessage(e)} />
                           </div>
                           <div className="footButtons">
                             <div className="buton btn-sm h-100" >
@@ -639,7 +639,7 @@ const ImgProfile = ({ user, toggleModal, imageShowen, isModalOpen, handleComment
                     </div>
                   </Modalidad>
                 </ModalBody>
-              </LocalForm>
+              </Form>
             </div>
         }
 
@@ -786,14 +786,16 @@ const ImgWall = ({ imagesWall, videosWall, handleWallSubmit, handlewallimg, togg
           <NavItem className="col-6 cursor">
             <NavLink
               className={classnames({ active: activeTab === '1' })}
-              onClick={() => { toggle('1'); }}>
+              onClick={() => { toggle('1'); }}
+            >
               Images
             </NavLink>
           </NavItem>
           <NavItem className="col-6 cursor">
             <NavLink
               className={classnames({ active: activeTab === '2' })}
-              onClick={() => { toggle('2'); }}>
+              onClick={() => { toggle('2'); }}
+            >
               Videos
             </NavLink>
           </NavItem>
@@ -835,7 +837,7 @@ const ModalTime = (props) => {
       <Modal isOpen={props.isTimeModalOpen} >
         <ModalHeader >Exceeded Duration</ModalHeader>
         <ModalBody >
-        The video you tried to post exceeds the maximum length of 1 minute. Please try another video.        </ModalBody>
+          The video you tried to post exceeds the maximum length of 1 minute. Please try another video.        </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={() => props.toggleModal('', '', '')} >Cancel</Button>
         </ModalFooter>
@@ -851,7 +853,7 @@ const ModalFormat = (props) => {
       <Modal isOpen={props.isFormatModalOpen}>
         <ModalHeader >Format file error.</ModalHeader>
         <ModalBody >
-        Please try another file or, choose and press another button.
+          Please try another file or, choose and press another button.
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={() => props.toggleModal('', '', '')} >Cancel</Button>
@@ -943,5 +945,10 @@ img {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.854);
+  transition-duration: .3s;
+}
+img:hover {
+  transform: scale(1.03);
 }
 `

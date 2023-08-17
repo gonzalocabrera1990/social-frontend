@@ -117,15 +117,15 @@ export const Forms = withRouter((props)=> {
     const country = countries.map((c, index) => <option key={index}>{c}</option>)
     return (
       <div>
-        <div className="container-fluid">
+        <div className="container mb-5">
           <div className=" col-sm-6 offset-sm-3">
             <h1>SignUp</h1>
           </div>
         </div>
 
         <div className="container">
-          <Form onSubmit={onSubmit}>
-            <FormGroup row>
+          <Form onSubmit={onSubmit}  className=" col-sm-8 offset-sm-2 col-md-6 offset-sm-3">
+            <FormGroup className="my-4" row>
               <Label htmlFor="username" md={2}>
                 Email
               </Label>
@@ -144,7 +144,7 @@ export const Forms = withRouter((props)=> {
                 <FormFeedback>{error.username.err}</FormFeedback>
               </Col>
             </FormGroup>
-            <FormGroup row>
+            <FormGroup className="my-4" row>
               <Label htmlFor="password" md={2}>
                 Password
               </Label>
@@ -163,7 +163,7 @@ export const Forms = withRouter((props)=> {
                 <FormFeedback>{error.password.err}</FormFeedback>
               </Col>
             </FormGroup>
-            <FormGroup row>
+            <FormGroup className="my-4" row>
               <Label htmlFor="repeatpassword" md={2}>
                 Repeat Password
               </Label>
@@ -182,7 +182,7 @@ export const Forms = withRouter((props)=> {
                 <FormFeedback>{error.repeatpassword.err}</FormFeedback>
               </Col>
             </FormGroup>
-            <FormGroup row>
+            <FormGroup className="my-4" row>
               <Label htmlFor="sex" md={2}>
                 Gender
               </Label>
@@ -201,7 +201,7 @@ export const Forms = withRouter((props)=> {
                 </Input>
               </Col>
             </FormGroup>
-            <FormGroup row>
+            <FormGroup className="my-4" row>
               <Label htmlFor="date" md={2}>
                 Birthdate
               </Label>
@@ -216,7 +216,7 @@ export const Forms = withRouter((props)=> {
                 />
               </Col>
             </FormGroup>
-            <FormGroup row>
+            <FormGroup className="my-4" row>
               <Label htmlFor="country" md={2}>
                 Country
               </Label>
@@ -236,9 +236,9 @@ export const Forms = withRouter((props)=> {
                 {
                   enableButton
                     ?
-                    <Button type="file" >Send</Button>
+                    <Button type="file"  className="bg-success border-0" >Send</Button>
                     :
-                    <Button type="file" disabled>Send</Button>
+                    <Button type="file" disabled >Send</Button>
                 }
 
               </Col>

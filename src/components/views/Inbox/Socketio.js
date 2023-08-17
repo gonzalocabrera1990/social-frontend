@@ -3,6 +3,8 @@ import { Chats } from './ChatsComponent';
 import { Mensajes } from './MensajesComponent';
 import { AmigosComponent } from './AmigosComponent';
 import { baseUrl } from '../../../shared/baseUrl';
+import { getHelper } from '../../../redux/fetchsHelpers'
+
 
 export const RenderInbox = (props) => {
 
@@ -38,13 +40,15 @@ export const RenderInbox = (props) => {
 
     const handleInboxFetch = () => {
         setInboxLoading(true)
-        const bearer = 'Bearer ' + localStorage.getItem('token');
-        var config = {
-          headers: { 'Authorization': bearer }
-        };
-        const QUERY = JSON.parse(localStorage.getItem('id'));;
-        fetch(baseUrl + `inbox-message/getch/${QUERY}`, config)
-        .then(data => data.json())
+        // const bearer = 'Bearer ' + localStorage.getItem('token');
+        // var config = {
+        //   headers: { 'Authorization': bearer }
+        // };
+        // const QUERY = JSON.parse(localStorage.getItem('id'));
+        // fetch(baseUrl + `inbox-message/getch/${QUERY}`, config)
+        // .then(data => data.json())
+        const QUERY = JSON.parse(localStorage.getItem('id'));
+        getHelper(`inbox-message/getch/${QUERY}`)
         .then(json => {
             setInboxLoading(false)
             setTalks(json)

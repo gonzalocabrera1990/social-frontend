@@ -85,7 +85,7 @@ const mapDispatchToProps = dispatch => ({
   storiesView: (userID, imagen) => dispatch(storiesView(userID, imagen)),
   storyFetcher: (userID) => dispatch(storyFetcher(userID)),
   fetchNotifications: (query) => dispatch(fetchNotifications(query)),
-  followFetch: (followingId, followerId) => dispatch(followFetch(followingId, followerId)),
+  followFetch: (followingId, followerId, urlUsers) => dispatch(followFetch(followingId, followerId, urlUsers)),
   friendRequestResponse: (dataNotification) => dispatch(friendRequestResponse(dataNotification)),
   fetchFollowers: () => dispatch(fetchFollowers()),
   fetchFollowing: () => dispatch(fetchFollowing()),
@@ -295,23 +295,24 @@ class Main extends Component {
     return (
       <div>
         <Headers />
-        <PosterScreen/>
+        <PosterScreen/> 
         <div>
           <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route exact path="/signup" component={UserForms} />            
-            <Route exact path="/start" component={StartPage} />
-            <Route exact path="/story/:user/:storyid" component={Story} />
-            <Route exact path="/story-user-wall/:user" component={UserWallStory} />
-            <Route exact path="/view/imagenwall/:idimg" component={ImagenOne} />
-            <Route
+          <Route exact path="/" component={HomePage} />
+          <Route exact path="/signup" component={UserForms} />
+          <Route
               exact
               path="/users/post"
               component={() => <PostSignup signup={this.props.signup} />}
             />
+            <Route exact path="/start" component={StartPage} />
             <Route exact path="/userpage" component={UserPages} />
-            <Route exact path="/inbox" component={PrivateInbox} />
             <Route exact path="/settings" component={SettingComponent} />
+            <Route exact path="/inbox" component={PrivateInbox} />
+            <Route exact path="/:idUsuario" component={OutlineRoute} />
+            <Route exact path="/view/imagenwall/:idimg" component={ImagenOne} />
+            <Route exact path="/story/:user/:storyid" component={Story} />
+            <Route exact path="/story-user-wall/:user" component={UserWallStory} />
             <Route exact path="/profiles/:idhost/:idusers/" render={(props) =>
             this.props.auth.isAuthenticated ? (
               <UsersComponent {...props} auth={this.props.auth} followFetch={this.props.followFetch}
@@ -325,7 +326,6 @@ class Main extends Component {
                   <Redirect to='/' />
                 )
                 } />
-            <Route exact path="/:idUsuario" component={OutlineRoute} />
             <Redirect to="/" />
           </Switch>
         </div>

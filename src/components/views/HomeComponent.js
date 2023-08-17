@@ -31,9 +31,13 @@ export const Home = withRouter((props) => {
       username: username.value,
       password: password.value
     })
-    .then(resp =>{
+    .then(resp => {
+      console.log('aaaaaaaaaa', resp);
       return resp ? props.history.push("/settings") : null
     })
+//     let response = await props.loginUser({ username: username.value, password: password.value})
+//  if(response) props.history.push("/settings")
+//  console.log('responsa', response);
   }
 
       if (isLoginSent) {

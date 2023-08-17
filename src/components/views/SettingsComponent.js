@@ -58,6 +58,10 @@ const controlState = (e) => {
   const toggleModal = () => {
       setIsModalOpen(!isModalOpen)
   }
+
+  const enableButton = dataForm.firstname || dataForm.lastname ||
+  dataForm.phrase || dataForm.status ? true : false;
+
     return (
       <div>
          <Modal isOpen={isModalOpen} toggle={toggleModal}>
@@ -69,6 +73,7 @@ const controlState = (e) => {
                 </ModalFooter>
             </Modal>
         <div className="container ">
+          <div className=" col-sm-10 offset-sm-1 col-md-8 offset-md-2" >
           <Form onSubmit={handleSubmit} encType="multipart/form-data">
             <FormGroup row>
               <Label htmlFor="firstname" md={2}>
@@ -128,10 +133,17 @@ const controlState = (e) => {
                 />
               </Col>
               <Col>
-                <Button type="submit">Send</Button>
+              {
+                  enableButton
+                    ?
+                    <Button type="file"  className="bg-success border-0" >Send</Button>
+                    :
+                    <Button type="file" disabled >Send</Button>
+                }
               </Col>
             </FormGroup>
           </Form>
+          </div>
         </div>
       </div>
     );

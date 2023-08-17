@@ -27,3 +27,6 @@ textarea {
 * {
   text-decoration: none;
 }
+Link, a {
+  text-decoration: dashed;
+}

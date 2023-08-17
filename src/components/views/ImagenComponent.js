@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom';
 import {
-  Button
+  Button, Form, Input
 } from 'reactstrap';
-import { Control, LocalForm } from 'react-redux-form';
 import { RenderComments } from '../CommentComponent';
 import { LikesModal } from '../LikesModal';
 import { baseUrl } from '../../shared/baseUrl';
-
+import { getHelper, deleteHelper } from '../../redux/fetchsHelpers';
 
 export const ImagenComponent = withRouter((props) => {
   const [data, setData] = useState(null)
@@ -21,38 +20,43 @@ export const ImagenComponent = withRouter((props) => {
   const [e, setE] = useState(null)
 
   useEffect(() => {
-    const ID = props.match.params.idimg;
-    let user = JSON.parse(localStorage.getItem("id"));
-    const bearer = "Bearer " + localStorage.getItem("token");
-    return fetch(`${baseUrl}imagen/view/imagenwall/${ID}`, {
-      method: "GET",
-      headers: {
-        Authorization: bearer
-      }
-    })
-      .then(resp => resp.json())
-      .then(img => {
-        let likesFilter = img.likes.some(i => i._id === user)
-        setData(img)
-        setLikes(img.likes)
-        setLikeStatus(likesFilter)
-      })
-      .then(() => {
-        return fetch(baseUrl + `comments/get-comments-image/${ID}`)
-          .then(data => data.json())
-          .then(json => {
-            setComentarios(json)
-          })
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+
+    (function () {
+      const ID = props.match.params.idimg;
+      let user = JSON.parse(localStorage.getItem("id"));
+      // const bearer = "Bearer " + localStorage.getItem("token");
+      // return fetch(`${baseUrl}imagen/view/imagenwall/${ID}`, {
+      //   method: "GET",
+      //   headers: {
+      //     Authorization: bearer
+      //   }
+      // })
+      //   .then(resp => resp.json())
+      getHelper(`imagen/view/imagenwall/${ID}`)
+        .then(img => {
+          let likesFilter = img.likes.some(i => i._id === user)
+          setData(img)
+          setLikes(img.likes)
+          setLikeStatus(likesFilter)
+        })
+        .then(() => {
+          // return fetch(baseUrl + `comments/get-comments-image/${ID}`)
+          //   .then(data => data.json())
+          getHelper(`comments/get-comments-image/${ID}`)
+            .then(json => {
+              setComentarios(json)
+            })
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    })()
   }, [props.match.params.idimg])
 
-  const handleSubmit = (values, event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const commenta = {
-      comment: values.comment,
+      comment: active,
       author: localStorage.getItem("id"),
       image: event.target.id
     }
@@ -72,6 +76,7 @@ export const ImagenComponent = withRouter((props) => {
     if (tag === "imagen") {
       props.postImageLike(img, usersData)
         .then((rest) => {
+          console.log('ttt', rest);
           let data = likes
           let likeResponse = !data ? null : data.some(user => user._id === usersData.id)
           if (likeResponse) {
@@ -104,16 +109,17 @@ export const ImagenComponent = withRouter((props) => {
   const fetchImgLikes = (img) => {
     let userId = JSON.parse(localStorage.getItem("id"))
     let imgId = img;
-    const bearer = 'Bearer ' + localStorage.getItem("token");
-    return fetch(baseUrl + `likes/get-i-like-it/${userId}/${imgId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': bearer
-      },
-      credentials: "same-origin"
-    })
-      .then(data => data.json())
+    // const bearer = 'Bearer ' + localStorage.getItem("token");
+    // return fetch(baseUrl + `likes/get-i-like-it/${userId}/${imgId}`, {
+    //   method: "GET",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     'Authorization': bearer
+    //   },
+    //   credentials: "same-origin"
+    // })
+    //   .then(data => data.json())
+    getHelper(`likes/get-i-like-it/${userId}/${imgId}`)
       .then(json => {
         setLikes(json)
       })
@@ -124,16 +130,17 @@ export const ImagenComponent = withRouter((props) => {
   const fetchVideoLikes = (img) => {
     let userId = JSON.parse(localStorage.getItem("id"))
     let imgId = img;
-    const bearer = 'Bearer ' + localStorage.getItem("token");
-    return fetch(baseUrl + `likes/get-i-like-it-video/${userId}/${imgId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': bearer
-      },
-      credentials: "same-origin"
-    })
-      .then(data => data.json())
+    // const bearer = 'Bearer ' + localStorage.getItem("token");
+    // return fetch(baseUrl + `likes/get-i-like-it-video/${userId}/${imgId}`, {
+    //   method: "GET",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     'Authorization': bearer
+    //   },
+    //   credentials: "same-origin"
+    // })
+    //   .then(data => data.json())
+    getHelper(`likes/get-i-like-it-video/${userId}/${imgId}`)
       .then(json => {
         setLikes(json)
       })
@@ -142,15 +149,16 @@ export const ImagenComponent = withRouter((props) => {
       })
   }
   const deleteComments = (ID) => {
-    const bearer = 'Bearer ' + localStorage.getItem('token');
-    return fetch(baseUrl + `comments/get-comments-image/${ID}`, {
-      method: "DELETE",
-      headers: {
-        'Authorization': bearer,
-        "Content-Type": "application/json"
-      }
-    })
-      .then(data => data.json())
+    // const bearer = 'Bearer ' + localStorage.getItem('token');
+    // return fetch(baseUrl + `comments/get-comments-image/${ID}`, {
+    //   method: "DELETE",
+    //   headers: {
+    //     'Authorization': bearer,
+    //     "Content-Type": "application/json"
+    //   }
+    // })
+    //   .then(data => data.json())
+      deleteHelper(`comments/get-comments-image/${ID}`)
       .then(json => {
         setComentarios(comentarios.filter(item => item._id !== json._id))
       })
@@ -217,7 +225,7 @@ export const ImagenComponent = withRouter((props) => {
             <Modalidad>
               <LikesModal isLikesModalOpen={isLikesModalOpen} toggle={toggleModal} likes={likes} usuario={usuario} />
               <div className="modalgroup">
-                <div className="c">
+                <div className="image-container">
                   <div className="access-buttons-media">
                     <div className="back-grid">
                       <span className="fa fa-angle-left cursor" onClick={() => window.history.back()}></span>
@@ -250,10 +258,10 @@ export const ImagenComponent = withRouter((props) => {
                     }
                   </div>
 
-                  <LocalForm onSubmit={(values, event) => handleSubmit(values, event)} id={!mapeo ? null : mapeo._id}>
+                  <Form  >
                     <div className="foot">
                       <div className="texto">
-                        <Control.textarea model=".comment" id="comment" className="textarea" value={active} onChange={(e) => controlPostMessage(e)} />
+                        <Input type="textarea" model=".comment" id="comment" className="textarea" value={active} onChange={(e) => controlPostMessage(e)} />
                       </div>
                       <div className="footButtons">
                         <div>
@@ -270,14 +278,14 @@ export const ImagenComponent = withRouter((props) => {
                         </div>
                         <div className="" >
                           {active.length === 0 || active.length > 140 ?
-                            <Button type="submit" disabled><span className="fas fa-paper-plane"></span></Button>
+                            <Button disabled><span className="fas fa-paper-plane"></span></Button>
                             :
-                            <Button type="submit"><span className="fas fa-paper-plane"></span></Button>
+                            <Button onClick={(event) => handleSubmit(event)} id={!mapeo ? null : mapeo._id}><span className="fas fa-paper-plane"></span></Button>
                           }
                         </div>
                       </div>
                     </div>
-                  </LocalForm>
+                  </Form>
 
 
 
@@ -328,10 +336,10 @@ export const ImagenComponent = withRouter((props) => {
                     }
                   </div>
 
-                  <LocalForm onSubmit={(values, event) => handleSubmit(values, event)} id={!mapeo ? null : mapeo._id}>
+                  <Form>
                     <div className="foot">
                       <div className="texto">
-                        <Control.textarea model=".comment" id="comment" className="textarea" value={active} onChange={(e) => controlPostMessage(e)} />
+                        <Input type="textarea" model=".comment" id="comment" className="textarea" value={active} onChange={(e) => controlPostMessage(e)} />
                       </div>
                       <div className="footButtons">
                         <div>
@@ -348,23 +356,18 @@ export const ImagenComponent = withRouter((props) => {
                         </div>
                         <div className="" >
                           {active.length === 0 || active.length > 140 ?
-                            <Button type="submit" disabled><span className="fas fa-paper-plane"></span></Button>
+                            <Button disabled><span className="fas fa-paper-plane"></span></Button>
                             :
-                            <Button type="submit"><span className="fas fa-paper-plane"></span></Button>
+                            <Button onClick={(event) => handleSubmit(event)} id={!mapeo ? null : mapeo._id}><span className="fas fa-paper-plane"></span></Button>
                           }
                         </div>
                       </div>
                     </div>
-                  </LocalForm>
-
-
-
-
+                  </Form>
                 </div>
               </div>
             </Modalidad>
         }
-
       </div>
     )
   }
@@ -380,7 +383,7 @@ div.modalgroup {
   flex-direction: row;
   justify-content: space-between;
   height:85vh;
-  width:70%;
+  width: 90%;
 }
 div.modalComments {
   display: flex;
@@ -390,7 +393,10 @@ div.modalComments {
   margin-left: 10px;
 }
 div.c {
-  width: 63%;
+  width: 100%;
+}
+div.image-container {
+  width: 100%;
 }
 div.foot {
   display: flex;

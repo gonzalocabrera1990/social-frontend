@@ -1,32 +1,12 @@
 import * as ActionTypes from "./ActionTypes";
 import { baseUrl } from "../shared/baseUrl";
+import { getHelper, postHelperBody, postHelperMedia, putHelperBody } from "./fetchsHelpers";
 
 //CHECK JWTTOKEN
 export const checkToken = () => (dispatch) => {
   dispatch(tokenLoading());
-  const bearer = 'Bearer ' + localStorage.getItem('token');
-  return fetch(baseUrl + `users/checkJWTtoken`, {
-    method: "GET",
-    headers: {
-      'Authorization': bearer
-    },
-  })
-  .then(response => {
-    if (response.ok) {
-      return response;
-    } else {
-      dispatch(loginError(response.statusText));
-      dispatch(logoutUser());
-      var error = new Error('Error ' + response.status + ': ' + response.statusText);
-      error.response = response;
-      throw error;
-    }
-  },
-    error => {
-      var errmess = new Error(error.message);
-      throw errmess;
-     })
-  .then(response => response.json())
+  // let tokenResponse = await getHelper('users/checkJWTtoken')
+  getHelper('users/checkJWTtoken')
   .then(result => {
     dispatch(tokenCheck());
   })
@@ -47,30 +27,8 @@ export const userCheck = () => ({
 //VIEW AFTER LOGIN
 export const fetchStart = () => (dispatch) => {
   dispatch(startLoading());
-  const bearer = 'Bearer ' + localStorage.getItem('token');
   const id = JSON.parse(localStorage.getItem('id'))
-  return fetch(baseUrl + `start/publications/${id}`, {
-    method: "GET",
-    headers: {
-      'Authorization': bearer
-    },
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-
-      }
-      else {
-        var error = new Error('Error ' + response.status + ': ' + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      })
-    .then(response => response.json())
+  getHelper(`start/publications/${id}`)
     .then(start => dispatch(addStart(start)))
     .then(start => dispatch(inboxFetch()))
     .catch(error => dispatch(startFailed(error.message)));
@@ -89,64 +47,18 @@ export const addStart = (start) => ({
   payload: start
 });
 //DELETE IMAGE AND VIDEO WALL
-export const removePhotograph = (imgId) => dispatch => {
+export const removePhotograph = (imgId) => async dispatch => {
   dispatch(userLoading());
-  const bearer = 'Bearer ' + localStorage.getItem('token');
-  
-  return fetch(baseUrl + `imagen/removeimage`, {
-    method: "POST",
-    body: JSON.stringify(imgId),
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    }
-  })
-  .then(response => {
-    if (response.ok) {
-      return response;
-    } else {
-      var error = new Error("Setting Error " + response.status + ": " + response.statusText);
-      error.response = response;
-      throw error;
-    }
-  }, error => {
-    var errmess = new Error(error.message);
-    throw errmess;
-  }
-  )
-    .then(data => data.json())
+  postHelperBody( `imagen/removeimage`, imgId)
     .then(json => {
       dispatch(receiveUser(json));
     })
     .catch(error => dispatch(receiveUserError(error)));
 }
 
-export const removeVideo = (imgId) => dispatch => {
+export const removeVideo = (imgId) => async dispatch => {
   dispatch(userLoading());
-  const bearer = 'Bearer ' + localStorage.getItem('token');
-  
-  return fetch(baseUrl + `imagen/removevideo`, {
-    method: "POST",
-    body: JSON.stringify(imgId),
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    }
-  })
-  .then(response => {
-    if (response.ok) {
-      return response;
-    } else {
-      var error = new Error("Setting Error " + response.status + ": " + response.statusText);
-      error.response = response;
-      throw error;
-    }
-  }, error => {
-    var errmess = new Error(error.message);
-    throw errmess;
-  }
-  )
-    .then(data => data.json())
+  postHelperBody(`imagen/removevideo`, imgId)
     .then(json => {
       dispatch(receiveUser(json));
     })
@@ -154,7 +66,7 @@ export const removeVideo = (imgId) => dispatch => {
 }
 
 //REGISTER POST DATA
-export const signupUser = User => dispatch => {
+export const signupUser =  User => async dispatch => {
   const newUser = {
     username: User.username,
     password: User.password,
@@ -162,33 +74,33 @@ export const signupUser = User => dispatch => {
     sex: User.sex,
     country: User.country
   };
- 
-  return fetch(baseUrl + "users/signup", {
-    method: "POST",
-    body: JSON.stringify(newUser),
-    headers: {
-      "Content-Type": "application/json"
-    },
-    credentials: "same-origin"
-  })
-    .then(
-      response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error(
-            "Error " + response.status + ": " + response.statusText
-          );
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
-    .then(response => response.json())
+  postHelperBody("users/signup", newUser)
+  // return fetch(baseUrl + "users/signup", {
+  //   method: "POST",
+  //   body: JSON.stringify(newUser),
+  //   headers: {
+  //     "Content-Type": "application/json"
+  //   },
+  //   credentials: "same-origin"
+  // })
+  //   .then(
+  //     response => {
+  //       if (response.ok) {
+  //         return response;
+  //       } else {
+  //         var error = new Error(
+  //           "Error " + response.status + ": " + response.statusText
+  //         );
+  //         error.response = response;
+  //         throw error;
+  //       }
+  //     },
+  //     error => {
+  //       var errmess = new Error(error.message);
+  //       throw errmess;
+  //     }
+  //   )
+  //   .then(response => response.json())
     .then(response => {
       const Resp = response.status;
       dispatch(responseSignup(Resp));
@@ -233,36 +145,13 @@ export const loginError = message => {
   };
 };
 
-export const loginUser = creds => dispatch => {
+export const loginUser = creds => async dispatch => {
   // We dispatch requestLogin to kickoff the call to the API
   dispatch(requestLogin(creds));
-
-  return fetch(baseUrl + "users/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(creds)
-  })
-    .then(
-      response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error(
-            "Error " + response.status + ": " + response.statusText
-          );
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-        throw error;
-      }
-    )
-    .then(response => response.json())
+  postHelperBody("users/login", creds)
     .then(response => {
       if (response.success) {
+        console.log('ccccccccc',response);
         // If login was successful, set the token in local storage
         localStorage.setItem("token", response.token);
         localStorage.setItem("creds", JSON.stringify({username: creds.username}));
@@ -278,12 +167,15 @@ export const loginUser = creds => dispatch => {
         dispatch(fetchFollowers());
         dispatch(fetchFollowing());
         dispatch(fetchStart());
+        console.log(!name && !lastname);
+        console.log(name);
+        console.log(lastname);
         if(!name && !lastname){
-          return new Promise((resolve,reject) =>{
-            resolve(true);
-          });
-        } 
-
+          return true
+          // return new Promise((resolve,reject) =>{
+          //   resolve(true);
+          // });
+        }        
       } else {
         var error = new Error("Error " + response.status);
         error.response = response;
@@ -305,36 +197,14 @@ export const receiveLogout = () => {
   };
 };
 //INBOX
-export const inboxFetch = () => dispatch => {
+export const inboxFetch = () => async dispatch => {
   dispatch(inboxLoading());
   const QUERY = JSON.parse(localStorage.getItem('id'));
-  const bearer = "Bearer " + localStorage.getItem("token");
-  return fetch(baseUrl + `inbox-message/getch/${QUERY}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-
-    }
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error("Setting Error " + response.status + ": " + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    }, error => {
-      var errmess = new Error(error.message);
-      throw errmess;
-    }
-    )
-    .then(response => response.json())
-    .then(inbox => {
-      const message = inbox.some(i => i.talk.some(t => t.author !== QUERY && t.seen === false))
-      dispatch(inboxAdd(inbox, message))})
-    .catch(error => dispatch(inboxFailed(error.message)));
+  getHelper(`inbox-message/getch/${QUERY}`)
+  .then(inbox => {
+    const message = inbox.some(i => i.talk.some(t => t.author !== QUERY && t.seen === false))
+    dispatch(inboxAdd(inbox, message))})
+  .catch(error => dispatch(inboxFailed(error.message)));
 }
 export const inboxLoading = () => ({
   type: ActionTypes.INBOX_LOADING
@@ -360,17 +230,9 @@ export const logoutUser = () => dispatch => {
   dispatch(receiveLogout());
 };
 
-export const fetchUser = (id) => dispatch => {
+export const fetchUser = (id) => async dispatch => {
   dispatch(userLoading());
-  const bearer = "Bearer " + localStorage.getItem("token");
-  return fetch(baseUrl + "users/get-home-user/" + id, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    }
-  })
-    .then(response => response.json())
+  getHelper(`users/get-home-user/${id}`)
     .then(response => {
       localStorage.setItem("img", JSON.stringify(response.image.filename));
       dispatch(receiveUser(response));
@@ -396,17 +258,9 @@ export const receiveUserError = error => {
 };
 
 //FETCH USERS COMPONENT
-export const fetchDataUser = (url) => dispatch => {
+export const fetchDataUser = (url) => async dispatch => {
   dispatch(usersLoading());
-  const bearer = "Bearer " + localStorage.getItem("token");
-  return fetch(baseUrl + `users/profile/${url.host}/${url.user}`,{
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    }
-  })
-    .then(response => response.json())
+  getHelper(`users/profile/${url.host}/${url.user}`)
     .then(response => {
       dispatch(receiveUsers(response));
     })
@@ -432,42 +286,14 @@ export const receiveUsersError = error => {
 
 //Settings fetch
 
-export const settingsUser = (userID, Settings) => dispatch => {
+export const settingsUser = (userID, Settings) => async dispatch => {
   const settingsUser = {
     firstname: Settings.firstname,
     lastname: Settings.lastname,
     phrase: Settings.phrase,
     status: Settings.status
   };
- 
-
-  const bearer = "Bearer " + localStorage.getItem("token");
-
-  return fetch(baseUrl + "users/settings/" + userID, {
-    method: "PUT",
-    body: JSON.stringify(settingsUser),
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    },
-    credentials: "same-origin"
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error(
-          "Setting Error " + response.status + ": " + response.statusText
-        );
-        error.response = response;
-        throw error;
-      }
-    },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
+  putHelperBody("users/settings/", settingsUser, userID)
     .then((response) => {
       const Resp = response.status;
       dispatch(responseSettings(Resp));
@@ -493,108 +319,42 @@ export const errorSettings = creds => {
 
 //IMAGEN FETCH
 
-export const imagenUser = (userID, image) => dispatch => {
-
-  const bearer = "Bearer " + localStorage.getItem("token");
-  return fetch(baseUrl + "imagen/profile-image-post/change/" + userID, {
-    method: "POST",
-    body: image,
-    headers: {
-      'Authorization': bearer
-    },
-    credentials: "same-origin"
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error("Image Error " + response.status + ": " + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
-    .then(response => {
-      console.log('response', response);
+export const imagenUser = (userID, image) => async dispatch => {
+  postHelperMedia(`imagen/profile-image-post/change/${userID}`, image)
+    .then(() => {
+      window.location.reload();
     })
     .catch(error => {
-      console.log("SETTINGS ERROR");
+      console.log("ERROR");
     });
 };
 
 //IMAGEN WALL FETCH
 
-export const imagenWall = (userID, image) => dispatch => {
-
-  const bearer = "Bearer " + localStorage.getItem("token");
-
-  return fetch(baseUrl + "imagen/imageswall/" + userID, {
-    method: "POST",
-    body: image,
-    headers: {
-      'Authorization': bearer
-    },
-    credentials: "same-origin"
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error("Image Error " + response.status + ": " + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
-    .then(response => {
-      console.log('response', response);
-    })
-    .catch(error => {
-      console.log("SETTINGS ERROR");
-    });
+export const imagenWall = (userID, image) => async dispatch => {
+postHelperMedia(`imagen/imageswall/${userID}`, image)
+.then(() => {
+  window.location.reload();
+})
+.catch(error => {
+  console.log("ERROR");
+});
 };
 
 //STORIES
-export const storiesCreator = (userID, image) => dispatch => {
-
-  const bearer = "Bearer " + localStorage.getItem("token");
-
-  return fetch(baseUrl + "imagen/story-post/" + userID, {
-    method: "POST",
-    body: image,
-    headers: {
-      'Authorization': bearer
-    },
-    credentials: "same-origin"
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error("Image Error " + response.status + ": " + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
-    .then(response => {
-      console.log('response', response);
-    })
-    .catch(error => {
-      console.log("SETTINGS ERROR");
-    });
+export const storiesCreator = (userID, image) => async dispatch => {
+  try {
+    let response = await postHelperMedia(`imagen/story-post/${userID}`, image)
+    return response
+  } catch (error) {
+    console.log("SETTINGS ERROR", error);
+  }
+    // .then(response => {
+    //   console.log('response', response);
+    // })
+    // .catch(error => {
+    //   console.log("SETTINGS ERROR");
+    // });
 };
 const measure = (timestamp) => {
   let inicio = new Date(timestamp).getTime();
@@ -643,30 +403,8 @@ export const receiveStoryError = error => {
   };
 };
 
-export const storiesView = (userID, image) => dispatch => {
-
-  const bearer = "Bearer " + localStorage.getItem("token");
-
-  return fetch(baseUrl + `imagen/story-view/${userID}/${image}`, {
-    method: "POST",
-    headers: {
-      'Authorization': bearer
-    }
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error("Image Error " + response.status + ": " + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      }
-    )
+export const storiesView = (userID, image) => async dispatch => {
+  postHelperBody(`imagen/story-view/${userID}/${image}`)
     .then(response => {
       console.log('response', response);
     })
@@ -677,30 +415,9 @@ export const storiesView = (userID, image) => dispatch => {
 //STORIES
 
 //FETCH IMAGEN AND COMMENTS TO ImagenComponent
-export const imagenFetch = (image) => dispatch => {
+export const imagenFetch = (image) => async dispatch => {
   dispatch(imagenLoading());
-  const bearer = "Bearer " + localStorage.getItem("token");
-  return fetch(baseUrl + `imagen/view/imagenwall/${image}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    }
-})
-  .then(response => {
-    if (response.ok) {
-      return response;
-    } else {
-      var error = new Error("Image Error " + response.status + ": " + response.statusText);
-      error.response = response;
-      throw error;
-    }
-  },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      })
-  .then(response => response.json())
+  getHelper(`imagen/view/imagenwall/${image}`)
   .then(img => {
       dispatch(imagenFetchComments(image, img));
     })
@@ -708,34 +425,12 @@ export const imagenFetch = (image) => dispatch => {
       dispatch(imagenError(error))
     });
 };
-const imagenFetchComments = (image, imgObj) => dispatch => {
-  const bearer = "Bearer " + localStorage.getItem("token");
+const imagenFetchComments = (image, imgObj) => async dispatch => {
   const DATA = {
     imagen: imgObj,
     comments: null
   }
-  return fetch(baseUrl + `comments/get-comments-image/${image}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    }
-  })
-  .then(response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error("Image Error " + response.status + ": " + response.statusText);
-          error.response = response;
-          throw error;
-        }
-      },
-        error => {
-          var errmess = new Error(error.message);
-          throw errmess;
-        }
-      )
-  .then(response => response.json())
+  getHelper(`comments/get-comments-image/${image}`)
   .then(comments => {
       DATA.comments = comments
     })
@@ -766,32 +461,11 @@ export const imagenError = (message) => {
   }
 }
 
-
-
-
 //GET Users notifications
-export const fetchNotifications = (query) => (dispatch) => {
+export const fetchNotifications = (query) =>async dispatch => {
   dispatch(notifLoading());
-
-  const bearer = 'Bearer ' + localStorage.getItem('token');
   const QUERY = query;
-  return fetch(baseUrl + `notification/user-notifications/get/${QUERY}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': bearer
-    }
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error('Error ' + response.status + ': ' + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    })
-    .then(response => response.json())
+  getHelper(`notification/user-notifications/get/${QUERY}`)
     .then(response => {
       dispatch(nofifSuccess(response));
     })
@@ -821,98 +495,35 @@ export const notifError = (message) => {
 
 //FOLLOWER
 
-export const followFetch = (followingId, followerId) => dispatch => {
-
+export const followFetch = (followingId, followerId, urlUsers) => async dispatch => {
   const data = {
     followingId: followingId,
     message: "Friend Request"
   }
-  const bearer = "Bearer " + localStorage.getItem("token");
-
-  return fetch(baseUrl + `notification/following-user/send/${followerId}`, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    },
-    credentials: "same-origin"
+  postHelperBody(`notification/following-user/send/${followerId}`, data)
+  .then(list => {
+    dispatch(fetchDataUser(urlUsers));
   })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error("Setting Error " + response.status + ": " + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    }, error => {
-      var errmess = new Error(error.message);
-      throw errmess;
-    }
-    )
 }
 
 //FOLLOWER ACEPTAR/RECHAZAR SOLICITUD
 
-export const friendRequestResponse = (dataNotification) => dispatch => {
+export const friendRequestResponse = (dataNotification) => async dispatch => {
   const data = {
     action: dataNotification.action,
     followingId: JSON.parse(localStorage.getItem("id")),
   }
-  const bearer = "Bearer " + localStorage.getItem("token");
-
-  return fetch(baseUrl + `notification/following-request/${dataNotification.followerId}/${dataNotification.notiId}`, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    },
-    credentials: "same-origin"
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error("Setting Error " + response.status + ": " + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    }, error => {
-      var errmess = new Error(error.message);
-      throw errmess;
-    }
-    )
+  postHelperBody(`notification/following-request/${dataNotification.followerId}/${dataNotification.notiId}`, data).then(res => res)
 }
 //GET Users followers
-export const fetchFollowers = () => (dispatch) => {
+export const fetchFollowers = () => async dispatch => {
   dispatch(followersLoading());
-
-  const bearer = 'Bearer ' + localStorage.getItem('token');
   const QUERY = JSON.parse(localStorage.getItem("id"));
-  return fetch(baseUrl + `users/followers-notifications-return/${QUERY}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': bearer
-    }
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error('Error ' + response.status + ': ' + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    })
-    .then(response => response.json())
+  getHelper(`users/followers-notifications-return/${QUERY}`)
     .then(response => {
       dispatch(followersSuccess(response));
     })
     .catch(error => dispatch(followersError(error.message)))
-
 }
 export const followersLoading = () => {
   return {
@@ -935,28 +546,10 @@ export const followersError = (message) => {
 }
 
 //GET Users followings
-export const fetchFollowing = () => (dispatch) => {
+export const fetchFollowing = () => async dispatch => {
   dispatch(followingLoading());
-
-  const bearer = 'Bearer ' + localStorage.getItem('token');
   const QUERY = JSON.parse(localStorage.getItem("id"));
-  return fetch(baseUrl + `users/following/${QUERY}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': bearer
-    }
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error('Error ' + response.status + ': ' + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    })
-    .then(response => response.json())
+  getHelper(`users/following/${QUERY}`)
     .then(response => {
       dispatch(followingSuccess(response));
       return response.follow
@@ -1023,39 +616,24 @@ export const handleNotificationStatus = () => (dispatch) => {
 
 //COMMENTS POST
 
-export const commentsPost = dataComment => dispatch => {
+export const commentsPost = dataComment => async dispatch => {
   const newComment = {
     comment: dataComment.comment,
     author: dataComment.author,
     image: dataComment.image
   };
-  const bearer = "Bearer " + localStorage.getItem("token");
-  return fetch(baseUrl + 'comments/post-comment', {
-    method: "POST",
-    body: JSON.stringify(newComment),
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    },
-    credentials: "same-origin"
-  })
-  .then(response => {
-    if (response.ok) {
-      return response;
-
-    }
-    else {
-      var error = new Error('Error ' + response.status + ': ' + response.statusText);
-      error.response = response;
-      throw error;
-    }
-  },
-    error => {
-      var errmess = new Error(error.message);
-      throw errmess;
-    })
-  .then(response => response.json())
-  .catch(error => dispatch(startFailed(error.message)));
+  try {
+    let messege = await postHelperBody('comments/post-comment', newComment);
+    return messege
+  } catch (error) {
+    dispatch(startFailed(error.message))
+  }
+  //postHelperBody('comments/post-comment', newComment)
+  // .then(response => {
+  //   console.log("333333333", response);
+  //   return response
+  // })
+  // .catch(error => dispatch(startFailed(error.message)));
 }
 
 // LIKE POST
@@ -1064,119 +642,38 @@ export const postImageLike = (imageid, usersData) => async (dispatch) => {
     id: await usersData.id,
     liked: await usersData.liked
   }
-  const bearer = 'Bearer ' + localStorage.getItem('token');
-
-  return fetch(baseUrl + 'likes/post-i-like-it/' + await imageid, {
-    method: "POST",
-    body: JSON.stringify(DATA),
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    },
-    credentials: "same-origin"
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error('Error ' + response.status + ': ' + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    },
-      error => {
-        throw error;
-      })
-    .then(response => response.json())
-    .then(like => { console.log('Favorite Added', like) }) //dispatch(addFavorites(favorites)); })
-    .catch(error => console.log(error.message))//dispatch(favoritesFailed(error.message)));
+try {
+  let response = await postHelperBody(`likes/post-i-like-it/${imageid}`, DATA)
+  return response
+} catch (error) {
+  console.log(error.message)
+}
+  // postHelperBody(`likes/post-i-like-it/${imageid}`, DATA)
+  // .then(like => { 
+  //   return like
+  // }) //dispatch(addFavorites(favorites)); })
+  // .catch(error => console.log(error.message))//dispatch(favoritesFailed(error.message)));
 }
 export const postVideoLike = (videoid, usersData) => async (dispatch) => {
   var DATA = {
     id: await usersData.id,
     liked: await usersData.liked
   }
-  const bearer = 'Bearer ' + localStorage.getItem('token');
-
-  return fetch(baseUrl + 'likes/post-i-like-it-video/' + await videoid, {
-    method: "POST",
-    body: JSON.stringify(DATA),
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    },
-    credentials: "same-origin"
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error('Error ' + response.status + ': ' + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    },
-      error => {
-        throw error;
-      })
-    .then(response => response.json())
-    .then(like => { console.log('Favorite Added', like) }) //dispatch(addFavorites(favorites)); })
-    .catch(error => console.log(error.message))//dispatch(favoritesFailed(error.message)));
+  try {
+    let response = await postHelperBody(`likes/post-i-like-it-video/${videoid}`, DATA)
+    return response
+  } catch (error) {
+    console.log(error.message)
+  }
 }
 
-export const fetchLikes = (userId, imgId) => (dispatch) => {
-  const bearer = 'Bearer ' + localStorage.getItem('token');
-  return fetch(baseUrl + `likes/get-i-like-it/${userId}/${imgId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    },
-    credentials: "same-origin"
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      }
-      else {
-        var error = new Error('Error ' + response.status + ': ' + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      })
-    .then(response => response.json())
+export const fetchLikes = (userId, imgId) => async dispatch => {
+  getHelper(`likes/get-i-like-it/${userId}/${imgId}`)
     .then(likes => dispatch(addlikes(likes)))
     .catch(error => dispatch(likesFailed(error.message)));
 }
-export const fetchVideoLikes = (userId, imgId) => (dispatch) => {
-  const bearer = 'Bearer ' + localStorage.getItem('token');
-  return fetch(baseUrl + `likes/get-i-like-it-video/${userId}/${imgId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': bearer
-    },
-    credentials: "same-origin"
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      }
-      else {
-        var error = new Error('Error ' + response.status + ': ' + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    },
-      error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-      })
-    .then(response => response.json())
+export const fetchVideoLikes = (userId, imgId) => async dispatch => {
+  getHelper(`likes/get-i-like-it-video/${userId}/${imgId}`)
     .then(likes => dispatch(addlikes(likes)))
     .catch(error => dispatch(likesFailed(error.message)));
 }

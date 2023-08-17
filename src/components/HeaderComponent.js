@@ -15,6 +15,7 @@ import {
 import { SearchRender } from './SearchWindow';
 import { Notifications } from './NotificationsWindow'
 import { baseUrl } from '../shared/baseUrl';
+import { getHelper, postHelperBody } from '../redux/fetchsHelpers';
 import Brand from '../shared/assets/images/b.png';
 
 
@@ -75,13 +76,15 @@ export const Header = (props) => {
   const handleSearch = (e) => {
     e.preventDefault();
     setSearchLoading(true)
-    const bearer = 'Bearer ' + localStorage.getItem('token');
-    var config = {
-      headers: { 'Authorization': bearer }
-    };
+    // const bearer = 'Bearer ' + localStorage.getItem('token');
+    // var config = {
+    //   headers: { 'Authorization': bearer }
+    // };
+    
+    // fetch(baseUrl + `search/search?q=${QUERY}`, config)
+    // .then(data => data.json())
     const QUERY = search;
-    fetch(baseUrl + `search/search?q=${QUERY}`, config)
-    .then(data => data.json())
+    getHelper(`search/search?q=${QUERY}`)
     .then(json => {
       setSearchLoading(false)
       return search === "" ? (
@@ -99,13 +102,15 @@ export const Header = (props) => {
     e.preventDefault();
       setStyled(styled === "none" ? "" : "none")
     if (readTrue === false) {
-      const bearer = 'Bearer ' + localStorage.getItem('token');
-      var config = {
-        method: "POST",
-        headers: { 'Authorization': bearer }
-      };
+      // const bearer = 'Bearer ' + localStorage.getItem('token');
+      // var config = {
+      //   method: "POST",
+      //   headers: { 'Authorization': bearer }
+      // };
+      //      fetch(baseUrl + `notification/all/readtrue/${QUERY}`, config)
+
       const QUERY = JSON.parse(localStorage.getItem('id'))
-      fetch(baseUrl + `notification/all/readtrue/${QUERY}`, config)
+      postHelperBody(`notification/all/readtrue/${QUERY}`,{})
         .then(json => {
           setReadTrue(true)
           props.handleNotificationStatus();
@@ -118,7 +123,7 @@ export const Header = (props) => {
         <Navbar className="container-fluid main-nav navbar-dark" expand="md">
           <div className="container">
             <NavbarToggler onClick={toggleNav} />
-            <NavbarBrand className="" href="/">
+            <NavbarBrand className="brand-image" href="/">
               <img
                 src={Brand}
                 alt="Red Social"

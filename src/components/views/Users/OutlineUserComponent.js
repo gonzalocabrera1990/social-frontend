@@ -4,20 +4,23 @@ import classnames from 'classnames';
 import { withRouter} from 'react-router-dom';
 import { Button, Nav, NavItem, NavLink } from 'reactstrap';
 import { baseUrl } from '../../../shared/baseUrl';
+import { getHelper } from '../../../redux/fetchsHelpers'
 
 export const Outline = withRouter((props) => {
     const [user, setUser] = useState([])
     const [error, setError] = useState(null)
     
     useEffect(() => {
+      (function(){
         const ID = props.match.params.idUsuario
-        return fetch(`${baseUrl}out-auth/get-outline-user/${ID}`, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-          })
-          .then(response => response.json())
+        // return fetch(`${baseUrl}out-auth/get-outline-user/${ID}`, {
+        //     method: "GET",
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //   })
+        //   .then(response => response.json())
+        getHelper(`out-auth/get-outline-user/${ID}`)
           .then(response => {
             if (!response) {
                 props.history.push("/")
@@ -28,6 +31,7 @@ export const Outline = withRouter((props) => {
           .catch(err => {
             setError(err.message)
           })
+      })()
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
     const redirecting = () => {
         props.history.push("/")

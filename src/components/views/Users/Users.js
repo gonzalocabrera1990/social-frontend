@@ -2,12 +2,12 @@ import React, { useLayoutEffect, useState, useEffect } from 'react';
 import styled from 'styled-components'
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
-import { Modal, ModalBody, Button, Nav, NavItem, NavLink } from 'reactstrap';
-import { Control, LocalForm } from 'react-redux-form';
+import { Modal, ModalBody, Button, Nav, NavItem, NavLink, Form, Input } from 'reactstrap';
 import { RenderComments } from '../../CommentComponent';
 import { LikesModal } from '../../LikesModal';
 import { Loading } from '../../LoadingComponent';
 import { baseUrl } from '../../../shared/baseUrl';
+import { getHelper, postHelperBody, deleteHelper } from '../../../redux/fetchsHelpers'
 
 function useWindowSize() {
     const [size, setSize] = useState([0]);
@@ -102,14 +102,11 @@ export const UsersComponent = (props) => {
     const handleFollow = (followerId) => {
         const followingId = props.user.user._id;
         const userData = followerId
-        props.followFetch(followingId, userData)
-            .then(() => {
-                const ID = {
-                    host: props.match.params.idhost,
-                    user: props.match.params.idusers
-                }
-                props.fetchDataUser(ID)
-            })
+        const urlUsers = {
+            host: props.match.params.idhost,
+            user: props.match.params.idusers
+        }
+        props.followFetch(followingId, userData, urlUsers)
     }
 
     const backForthModal = (e) => {
@@ -181,16 +178,16 @@ export const UsersComponent = (props) => {
         var config = {
             foto: bodyPath
         };
-        return fetch(baseUrl + `users/returnid/${ID}`, {
-            method: "POST",
-            body: JSON.stringify(config),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-            .then(data => data.json())
+        // return fetch(baseUrl + `users/returnid/${ID}`, {
+        //     method: "POST",
+        //     body: JSON.stringify(config),
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     }
+        // })
+        //     .then(data => data.json())
+        postHelperBody(`users/returnid/${ID}`, config)
             .then(response => {
-
                 let result = response.result
                 setImgID(result)
                 return result;
@@ -209,16 +206,16 @@ export const UsersComponent = (props) => {
         var config = {
             foto: bodyPath
         };
-        return fetch(baseUrl + `users/returnid-video/${ID}`, {
-            method: "POST",
-            body: JSON.stringify(config),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-            .then(data => data.json())
+        // return fetch(baseUrl + `users/returnid-video/${ID}`, {
+        //     method: "POST",
+        //     body: JSON.stringify(config),
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     }
+        // })
+        //     .then(data => data.json())
+        postHelperBody(`users/returnid-video/${ID}`, config)
             .then(response => {
-
                 let result = response.result
                 setImgID(result)
                 return result;
@@ -233,8 +230,9 @@ export const UsersComponent = (props) => {
             })
     }
     const fetchComments = (ID) => {
-        return fetch(baseUrl + `comments/get-comments-image/${ID}`)
-            .then(data => data.json())
+        // return fetch(baseUrl + `comments/get-comments-image/${ID}`)
+        //     .then(data => data.json())
+        getHelper(`comments/get-comments-image/${ID}`)
             .then(json => {
                 setComentarios(json)
             })
@@ -243,15 +241,16 @@ export const UsersComponent = (props) => {
             })
     }
     const deleteComments = (ID) => {
-        const bearer = 'Bearer ' + localStorage.getItem('token');
-        return fetch(baseUrl + `comments/get-comments-image/${ID}`, {
-            method: "DELETE",
-            headers: {
-                'Authorization': bearer,
-                "Content-Type": "application/json"
-            }
-        })
-            .then(data => data.json())
+        // const bearer = 'Bearer ' + localStorage.getItem('token');
+        // return fetch(baseUrl + `comments/get-comments-image/${ID}`, {
+        //     method: "DELETE",
+        //     headers: {
+        //         'Authorization': bearer,
+        //         "Content-Type": "application/json"
+        //     }
+        // })
+        //     .then(data => data.json())
+        deleteHelper(`comments/get-comments-image/${ID}`)
             .then(json => {
                 let resultsComments = comentarios.filter(item => item._id !== json._id)
                 setComentarios(resultsComments)
@@ -260,9 +259,10 @@ export const UsersComponent = (props) => {
                 setError(err)
             })
     }
-    const handleSubmit = (values) => {
+    const handleSubmit = (e) => {
+        e.preventDefault()
         const comment = {
-            comment: values.comment,
+            comment: active,
             author: localStorage.getItem("id"),
             image: imgID
         }
@@ -288,6 +288,7 @@ export const UsersComponent = (props) => {
         if (tag === 'imagen') {
             props.postImageLike(img, usersData)
                 .then(async () => {
+                    
                     fetchUsersLikes(event, img, tag);
                 })
         } else {
@@ -352,7 +353,7 @@ export const UsersComponent = (props) => {
                                 { color: "", fontSize: "40px", position: "absolute", right: "-50px", top: "40%", zIndex: "1" } : { display: "none" }}>
                                 <span className="fas fa-angle-right" id="forth" onClick={(event) => backForthModal(event)}></span>
                             </div>
-                            <LocalForm onSubmit={(values) => handleSubmit(values)}>
+                            <Form onSubmit={(event) => handleSubmit(event)}>
                                 <ModalBody className="modalWithoutPadding">
                                     <ModalGrid>
                                         <div className="modalgroup">
@@ -378,7 +379,7 @@ export const UsersComponent = (props) => {
                                                 </div>
                                                 <div className="foot">
                                                     <div className="texto">
-                                                        <Control.textarea className="h-100" model=".comment" id="comment" value={active} onChange={(e) => controlPostMessage(e)} />
+                                                        <Input type="textarea" className="h-100" model=".comment" id="comment" value={active} onChange={(e) => controlPostMessage(e)} />
                                                     </div>
                                                     <div className="footButtons">
                                                         <div className="ml-2">
@@ -408,7 +409,7 @@ export const UsersComponent = (props) => {
 
                                 </ModalBody>
 
-                            </LocalForm>
+                            </Form>
                         </div>
                         : modalType === "video" ?
                             <div>
@@ -420,7 +421,7 @@ export const UsersComponent = (props) => {
                                     { color: "", fontSize: "40px", position: "absolute", right: "-50px", top: "40%", zIndex: "1" } : { display: "none" }}>
                                     <span className="fas fa-angle-right" id="forth" onClick={(event) => backForthModalVideo(event)}></span>
                                 </div>
-                                <LocalForm onSubmit={(values) => handleSubmit(values)}>
+                                <Form onSubmit={(event) => handleSubmit(event)}>
                                     <ModalBody className="modalWithoutPadding">
                                         <ModalGrid>
                                             <div className="modalgroup">
@@ -450,7 +451,7 @@ export const UsersComponent = (props) => {
                                                     }</div>
                                                     <div className="foot">
                                                         <div className="texto">
-                                                            <Control.textarea className="h-100" model=".comment" id="comment" value={active} onChange={(e) => controlPostMessage(e)} />
+                                                            <Input type="textarea" className="h-100" model=".comment" id="comment" value={active} onChange={(e) => controlPostMessage(e)} />
                                                         </div>
                                                         <div className="footButtons">
                                                             <div className="ml-2">
@@ -480,7 +481,7 @@ export const UsersComponent = (props) => {
 
                                     </ModalBody>
 
-                                </LocalForm>
+                                </Form>
                             </div>
                             : null
                     }
@@ -685,6 +686,11 @@ img {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.854);
+  transition-duration: .3s;
+}
+img:hover {
+  transform: scale(1.03);
 }
 `
 const ModalGrid = styled.div`

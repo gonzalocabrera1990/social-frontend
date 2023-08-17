@@ -1,6 +1,18 @@
-import React from 'react';
-
+import React, {useEffect, useState} from 'react';
+import { Loading } from '../LoadingComponent';
 export const PostSignup = props => {
+const [loading, setLoading] = useState(true)
+useEffect(()=>{
+  if(props.signup.successMess) setLoading(false)
+}, [props.signup])
+  if (loading) {
+    return (
+        <div >
+            <Loading />
+        </div>
+    )
+}
+else {
   return (
     <div className="container">
       <div className="row">
@@ -13,4 +25,5 @@ export const PostSignup = props => {
       </div>
     </div>
   );
+}
 };

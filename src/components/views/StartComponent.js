@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import classnames from 'classnames';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { Stories } from './StoriesComponent';
 import { ModalComponent } from '../ModalComponent';
 import { Loading } from '../LoadingComponent';
 import { baseUrl } from '../../shared/baseUrl';
+import { getHelper, deleteHelper } from '../../redux/fetchsHelpers'
 import NoContent from '../../shared/assets/images/start.png';
 
-export const StartComponent = (props) => {
+export const StartComponent = withRouter((props) => {
     const [content, setContent] = useState([]);
     const [comments, setComments] = useState([]);
     const [contentLoading, setContentLoading] = useState(true);
@@ -33,9 +34,16 @@ export const StartComponent = (props) => {
         setFollowers(!props.followers ? [] : props.followers.followers)
         setFollowingLoading(!props.following ? true : props.following.isLoading)
         setUsuario(!props.user.user ? null : props.user.user.usuario)
+        if(props.user.user) {
+            let name = props.user.user.firstname;
+            let lastname = props.user.user.lastname;
+            if(!name && !lastname){
+                props.history.push("/settings")
+            }
+        }
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-    const handleSubmit = (values, event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         let imageCommentId;
 
@@ -46,7 +54,7 @@ export const StartComponent = (props) => {
         }
 
         const commenta = {
-            comment: values.comment,
+            comment: active,
             author: localStorage.getItem("id"),
             image: imageCommentId
         }
@@ -70,7 +78,6 @@ export const StartComponent = (props) => {
                 setComments(addComment)
                 setActive('')
             })
-
     }
     const controlPostMessage = (e) => {
         const target = e.target;
@@ -78,15 +85,16 @@ export const StartComponent = (props) => {
         setActive(value)
     }
     const deleteComments = (ID) => {
-        const bearer = 'Bearer ' + localStorage.getItem('token');
-        return fetch(baseUrl + `comments/get-comments-image/${ID}`, {
-            method: "DELETE",
-            headers: {
-                'Authorization': bearer,
-                "Content-Type": "application/json"
-            }
-        })
-            .then(data => data.json())
+        // const bearer = 'Bearer ' + localStorage.getItem('token');
+        // return fetch(baseUrl + `comments/get-comments-image/${ID}`, {
+        //     method: "DELETE",
+        //     headers: {
+        //         'Authorization': bearer,
+        //         "Content-Type": "application/json"
+        //     }
+        // })
+        //     .then(data => data.json())
+        deleteHelper(`comments/get-comments-image/${ID}`)
             .then(json => {
                 let test = content[0].map(item => {
                     if (item._id === img._id) {
@@ -189,31 +197,33 @@ export const StartComponent = (props) => {
         if (tag === "imagen") {
             let userId = value.userId._id;
             let imgId = value.imageId._id;
-            const bearer = 'Bearer ' + localStorage.getItem('token');
-            return fetch(baseUrl + `likes/get-i-like-it/${userId}/${imgId}`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': bearer
-                },
-                credentials: "same-origin"
-            })
-                .then(response => response.json())
+            // const bearer = 'Bearer ' + localStorage.getItem('token');
+            // return fetch(baseUrl + `likes/get-i-like-it/${userId}/${imgId}`, {
+            //     method: "GET",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //         'Authorization': bearer
+            //     },
+            //     credentials: "same-origin"
+            // })
+            //     .then(response => response.json())
+            getHelper(`likes/get-i-like-it/${userId}/${imgId}`)
                 .then(likes => setLikes(likes))
                 .catch(error => setError(error.message))
         } else {
             let userId = value.userId._id;
             let vidId = value.videoId._id;
-            const bearer = 'Bearer ' + localStorage.getItem('token');
-            return fetch(baseUrl + `likes/get-i-like-it-video/${userId}/${vidId}`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': bearer
-                },
-                credentials: "same-origin"
-            })
-                .then(response => response.json())
+            // const bearer = 'Bearer ' + localStorage.getItem('token');
+            // return fetch(baseUrl + `likes/get-i-like-it-video/${userId}/${vidId}`, {
+            //     method: "GET",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //         'Authorization': bearer
+            //     },
+            //     credentials: "same-origin"
+            // })
+            //     .then(response => response.json())
+                getHelper(`likes/get-i-like-it-video/${userId}/${vidId}`)
                 .then(likes => setLikes(likes))
                 .catch(error => setError(error.message))
         }
@@ -243,7 +253,7 @@ export const StartComponent = (props) => {
             </div>
         </div>
     )
-}
+})
 
 const ImgWall = (props) => {
     const [activeVideo, setActiveVideo] = useState(false)
@@ -531,14 +541,16 @@ const Amigos = (props) => {
                     <NavItem className="col-6 cursor">
                         <NavLink
                             className={classnames({ active: activeTab === '1' })}
-                            onClick={() => { toggle('1'); }}>
+                            onClick={() => { toggle('1'); }}
+                            >
                             Following
                         </NavLink>
                     </NavItem>
                     <NavItem className="col-6 cursor">
                         <NavLink
                             className={classnames({ active: activeTab === '2' })}
-                            onClick={() => { toggle('2'); }}>
+                            onClick={() => { toggle('2'); }}
+                            >
                             Followers
                         </NavLink>
                     </NavItem>
@@ -562,15 +574,17 @@ const Amigos = (props) => {
 
 
 const ImageGrida = styled.div`
-display: grid;
-grid-gap: 10px;
-grid-template-columns: 1fr 1fr 1fr;
-grid-template-rows: 1fr;
-grid-auto-rows: minmax(30%, 30%);
-grid-auto-columns: minmax(30%, 30%);
+// display: grid;
+// grid-gap: 10px;
+// grid-template-columns: 1fr 1fr 1fr;
+// grid-template-rows: 1fr;
+// grid-auto-rows: minmax(30%, 30%);
+// grid-auto-columns: minmax(30%, 30%);
+// align-items: center;
+// border-radius: 20%;
+display: flex;
 align-items: center;
-border-radius: 20%;
-
+color: black;
 h6 {
     width: 100%;
     overflow: hidden;
@@ -580,8 +594,7 @@ h6 {
     margin-left: 30px;
 }
 img{
-  margin-top: 10px;
-  margin-left: 10px;
+  margin: 8px;
   width: 50px;
   height: 50px;
   border-radius: 50%;
